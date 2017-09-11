@@ -22,7 +22,7 @@ var config = {
   plugins: [
 		new CopyPlugin([
       { from: './dev/server.js', to: 'server.js' },
-      { from: './dev/passport.js', to: 'passport.js' },
+      { from: './dev/login.js', to: 'login.js' },
       { from: './dev/app/index.html', to: 'app/index.html' },
 		]),
 	]

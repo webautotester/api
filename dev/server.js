@@ -23,21 +23,8 @@ app.use(function(req, res, next) {
     next();
 });
 
-
-
-const passportRoute = require('./passport.js')
-passportRoute.init(serverNames,app);
-
-
-// var fs = require('fs');
-// var RouteDir = 'routes';
-// var files = fs.readdirSync(RouteDir);
-
-// files.forEach(function(file) {
-//     var filePath = path.resolve('./', RouteDir, file);
-//     var route = require(filePath);
-//     route.init(serverNames, app);
-// });
+const loginRoute = require('./login.js')
+loginRoute.init(serverNames,app);
 
 
 app.listen(8080, function() {
