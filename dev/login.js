@@ -12,16 +12,10 @@ module.exports.init = function(serverNames, webServer) {
     
     webServer.use(passport.initialize());
     webServer.use(passport.session());
-    //webServer.use(webServer.router);
 
     passport.serializeUser((user, done) => {
         done(null, user._id);
-        //done(null, user);
     });
-
-    // passport.deserializeUser((user,done) => {
-    //     done(null, user);
-    // });
 
     passport.deserializeUser((_id,done) => {
         MongoClient.connect(dbUrl).then(db => {
@@ -29,7 +23,6 @@ module.exports.init = function(serverNames, webServer) {
                 if (err) {
                     return done(err)
                 } else {
-                    console.log(_id)
                     userCollection.findOne({_id:new ObjectID(_id)})
                     .then( foundUser => {
                         if (foundUser) {
@@ -102,10 +95,8 @@ module.exports.init = function(serverNames, webServer) {
                     .then( (user) => {
                         if (user) {
                             var HTTP_CONFLIT = 409;
-                            console.log(`user already recorded: ${JSON.stringify(user)}`);
                             res.status(HTTP_CONFLIT).send(user).end();
                         } else {
-                            console.log(`recording new user: ${JSON.stringify(newUser)}`);
                             userCollection.save(newUser).then(savedUser => {
                                 res.send(savedUser).end();
                                 db.close();
@@ -122,7 +113,6 @@ module.exports.init = function(serverNames, webServer) {
 				}
 			});
 		}).catch(err => {
-			console.log(err);
 			res.status(500).send(err).end;
 		});
 
