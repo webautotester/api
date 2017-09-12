@@ -1,4 +1,3 @@
-const winston = require('winston');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const MongoClient = require('mongodb').MongoClient;
@@ -16,14 +15,67 @@ module.exports.init = function(serverNames, webServer) {
 
     passport.use(new LocalStrategy(
         (username, password, done) => {
-            return done(null, false, {message: 'Incorrect username.'});
+            MongoClient.connect(dbUrl).then(db => {
+                db.collection('user', (err, userCollection) => {
+                    if (err) {
+                        return done(err)
+                    } else {
+                        var user = {
+                            username : username,
+                            password : password
+                        };
+                        userCollection.findOne(user)
+                        .then( foundUser => {
+                            if (foundUser) {
+                                return done(null, foundUser);
+                            } else {
+                                return done(null, false, {message:'Incorrect Login/Password'})
+                            }
+                        })
+                        .catch(err => {
+                            return done(err);
+                        })
+                    }
+                })
+            }).catch(err => {
+                return done(err);
+            });
         }
-    ))
+    ));
+
+    passport.serializeUser((user, done) => {
+        done(null, user._id);
+    });
+
+    passport.deserializeUser((_id,done) => {
+        MongoClient.connect(dbUrl).then(db => {
+            db.collection('user', (err, userCollection) => {
+                if (err) {
+                    return done(err)
+                } else {
+                    userCollection.findOne({_id:new ObjectID(_id)})
+                    .then( foundUser => {
+                        if (foundUser) {
+                            return done(null, foundUser);
+                        } else {
+                            return done(null, false, {message:'Incorrect Login/Password'})
+                        }
+                    })
+                    .catch(err => {
+                        return done(err);
+                    })
+                }
+            })
+        }).catch(err => {
+            return done(err);
+        });
+    });
     
     webServer.post('/login',
-        passport.authenticate('local',
-        { successRedirect: '/',
-          failureRedirect:'/login' })
+        passport.authenticate('local'),
+        (req, res) => {
+            res.status(200).send(req.user).end();
+        }
     );
 
     webServer.post('/signin', (req, res) => {
@@ -41,10 +93,10 @@ module.exports.init = function(serverNames, webServer) {
                     .then( (user) => {
                         if (user) {
                             var HTTP_CONFLIT = 409;
-                            winston.info(`user already recorded: ${JSON.stringify(user)}`);
+                            console.log(`user already recorded: ${JSON.stringify(user)}`);
                             res.status(HTTP_CONFLIT).send(user).end();
                         } else {
-                            winston.info(`recording new user: ${JSON.stringify(newUser)}`);
+                            console.log(`recording new user: ${JSON.stringify(newUser)}`);
                             userCollection.save(newUser).then(savedUser => {
                                 res.send(savedUser).end();
                                 db.close();
@@ -61,7 +113,7 @@ module.exports.init = function(serverNames, webServer) {
 				}
 			});
 		}).catch(err => {
-			winston.info(err);
+			console.log(err);
 			res.status(500).send(err).end;
 		});
 
