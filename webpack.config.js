@@ -23,6 +23,7 @@ var config = {
 		new CopyPlugin([
       { from: './dev/server.js', to: 'server.js' },
       { from: './dev/login.js', to: 'login.js' },
+      { from: './dev/routes/scenario.js', to: 'routes/scenario.js' },
       { from: './dev/app/index.html', to: 'app/index.html' },
 		]),
 	]

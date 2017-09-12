@@ -9,9 +9,44 @@ const ObjectID = require('mongodb').ObjectID;
 
 module.exports.init = function(serverNames, webServer) {
     const dbUrl = `mongodb://${serverNames.mongoServerName}:27017/wat_storage`;
+    
     webServer.use(passport.initialize());
     webServer.use(passport.session());
     //webServer.use(webServer.router);
+
+    passport.serializeUser((user, done) => {
+        done(null, user._id);
+        //done(null, user);
+    });
+
+    // passport.deserializeUser((user,done) => {
+    //     done(null, user);
+    // });
+
+    passport.deserializeUser((_id,done) => {
+        MongoClient.connect(dbUrl).then(db => {
+            db.collection('user', (err, userCollection) => {
+                if (err) {
+                    return done(err)
+                } else {
+                    console.log(_id)
+                    userCollection.findOne({_id:new ObjectID(_id)})
+                    .then( foundUser => {
+                        if (foundUser) {
+                            return done(null, foundUser);
+                        } else {
+                            return done(null, false, {message:'Incorrect Login/Password'})
+                        }
+                    })
+                    .catch(err => {
+                        return done(err);
+                    })
+                }
+            })
+        }).catch(err => {
+            return done(err);
+        });
+    });
 
     passport.use(new LocalStrategy(
         (username, password, done) => {
@@ -43,33 +78,7 @@ module.exports.init = function(serverNames, webServer) {
         }
     ));
 
-    passport.serializeUser((user, done) => {
-        done(null, user._id);
-    });
 
-    passport.deserializeUser((_id,done) => {
-        MongoClient.connect(dbUrl).then(db => {
-            db.collection('user', (err, userCollection) => {
-                if (err) {
-                    return done(err)
-                } else {
-                    userCollection.findOne({_id:new ObjectID(_id)})
-                    .then( foundUser => {
-                        if (foundUser) {
-                            return done(null, foundUser);
-                        } else {
-                            return done(null, false, {message:'Incorrect Login/Password'})
-                        }
-                    })
-                    .catch(err => {
-                        return done(err);
-                    })
-                }
-            })
-        }).catch(err => {
-            return done(err);
-        });
-    });
     
     webServer.post('/login',
         passport.authenticate('local'),
