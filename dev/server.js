@@ -6,12 +6,15 @@ var serverNames = {
 var winston = require('winston');
 
 var express = require('express');
+var helmet = require('helmet');
 var path = require('path');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var cookieSession = require('cookie-session');
 var applicationRoot = __dirname;
 var app = express();
+
+app.use(helmet());
 
 //files for HTML pages
 app.use(express.static(path.join(applicationRoot, './app')));
