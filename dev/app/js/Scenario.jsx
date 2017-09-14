@@ -1,5 +1,5 @@
 import React from 'react';
-import {getRunForScenario} from './ScenarioHelper.js';
+import {getRunForScenario, isScenarioScheduled, scheduleScenario, unscheduleScenario, playNowScenario} from './ScenarioHelper.js';
 
 export default class Scenario extends React.Component {
 
@@ -9,56 +9,113 @@ export default class Scenario extends React.Component {
 			scenario : {
 				_id : this.props._id,
 				uid : this.props.uid,
-				actions : this.props.actions,
-				isScheduled : this.props.isScheduled
+				actions : this.props.actions
 			},
+			isScheduled : null,
 			runs: []
 		};
-		this.onClick = this.onClick.bind(this);
+		this.onClickSchedule = this.onClickSchedule.bind(this);
+		this.onClickUnschedule = this.onClickUnschedule.bind(this);
+		this.onClickPlayNow = this.onClickPlayNow.bind(this);
 	}
 
 	componentDidMount() {
-		getRunForScenario(this.props._id)
-			.then(fetchedRuns => {
-				console.log('fetched');
-				console.log(JSON.stringify(fetchedRuns));
-				this.setState( () => {
+		var runPromise = getRunForScenario(this.state.scenario._id);
+		var schedulePromise = isScenarioScheduled(this.state.scenario._id);
+		Promise.all([runPromise, schedulePromise])
+			.then(promisesResult => {
+				const fetchedRuns = promisesResult[0];
+				const fetchedIsScheduled = promisesResult[1];
+				this.setState( (prevState) => {
 					return {
-						runs: fetchedRuns
+						scenario: prevState.scenario,
+						runs: fetchedRuns,
+						isScheduled: fetchedIsScheduled
 					};
 				});
 			})
-			.catch((err) => {
-				console.log('error');
-				console.error(err);
-				this.setState( () => {
+			.catch(err => {
+				console.log(err);
+				this.setState( (prevState) => {
 					return {
-						runs: []
+						scenario: prevState.scenario,
+						runs: [],
+						isScheduled: null
 					};
 				});
 			});
 	}
 
-	onClick() {
+	onClickSchedule() {
+		scheduleScenario(this.state.scenario._id)
+			.then( () => {
+				this.setState( (prevState) => {
+					return {
+						scenario: prevState.scenario,
+						runs: prevState.runs,
+						isScheduled: true
+					};
+				});
+			})
+			.catch( err => {
+				console.log(err);
+			});
+	}
+
+	onClickUnschedule() {
+		unscheduleScenario(this.state.scenario._id)
+			.then( () => {
+				this.setState( (prevState) => {
+					return {
+						scenario: prevState.scenario,
+						runs: prevState.runs,
+						isScheduled: false
+					};
+				});
+			})
+			.catch( err => {
+				console.log(err);
+			});
+
+	}
+
+	onClickPlayNow() {
+		playNowScenario(this.state.scenario._id)
+			.then( msg => {
+				console.log(msg);
+			})
+			.catch( err => {
+				console.log(err);
+			});
 	}
 
 	render() {
 		console.log('render');
 		var runs = this.state.runs.map( (run) => <li key={run._id}>{run.result} - {run.date} </li>);
 		var actions = this.state.scenario.actions.map( (action, i) => <li key={i}>{action.type}</li>);
+		let isScheduled;
+		if (this.state.isScheduled) {
+			isScheduled = 'scheduled';
+		} else {
+			isScheduled = 'not scheduled';
+		}
 		return (
-			<div onClick={this.handleClick}>
+			<div>
 				<div>
 					<h1>Scenario</h1>
-					<span>{this.props._id}</span>
-					<span>{this.props.isScheduled}</span>
+					<span>Id = {this.state.scenario._id} is <b>{isScheduled}</b></span>
 				</div>
 				<div>
-					<h1>Actions</h1>
+					<h2>Actions</h2>
 					<ul>{actions}</ul>
 				</div>
 				<div>
-					<h1>Runs</h1>
+					<button onClick={this.onClickPlayNow}>Play Now</button>
+					<button onClick={this.onClickSchedule}>Schedule</button>
+					<button onClick={this.onClickUnschedule}>Unschedule</button>
+				</div>
+				<div>
+					<h2>Last 10 Runs</h2>
 					<ul>{runs}</ul>
 				</div>
 			</div>

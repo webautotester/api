@@ -1,6 +1,7 @@
-var argv = require('yargs').usage('$0 server.js --mongo=[string]').argv;
+var argv = require('yargs').usage('$0 server.js --mongo=[string] --scheduler=[string]').argv;
 var serverNames = {
-    mongoServerName : argv.mongo || 'localhost',
+	mongoServerName : argv.mongo || 'localhost',
+	schedulerServerName : argv.scheduler || 'localhost'
 };
 
 var winston = require('winston');
@@ -21,27 +22,33 @@ app.use(express.static(path.join(applicationRoot, './app')));
 
 app.use(cookieParser());
 app.use(cookieSession({
-    name: 'session',
-    keys: ['key1','key2'],
-    // Cookie Options
-    maxAge: 24 * 60 * 60 * 1000 // 24 hours
-  }))
+	name: 'session',
+	keys: ['key1','key2'],
+	// Cookie Options
+	maxAge: 24 * 60 * 60 * 1000 // 24 hours
+}));
 app.use(bodyParser.json()); // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({ // to support URL-encoded bodies
-    extended: true
+	extended: true
 }));
 app.use(function(req, res, next) {
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE');
-    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type, Authorization');
-    next();
+	res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE');
+	res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type, Authorization');
+	next();
 });
 
-const loginRoute = require('./login.js')
+const loginRoute = require('./login.js');
 loginRoute.init(serverNames,app);
 
 const scenarioRoute = require('./routes/scenario.js');
 scenarioRoute.init(serverNames,app);
 
+const runRoute = require('./routes/run.js');
+runRoute.init(serverNames,app);
+
+const schedule = require('./routes/schedule.js');
+schedule.init(serverNames,app);
+
 app.listen(8080, function() {
-    winston.info('WAT Front is listening on port 8080');
+	winston.info('WAT Front is listening on port 8080');
 });

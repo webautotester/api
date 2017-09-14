@@ -41,7 +41,6 @@ export function signin(credentials) {
 			.then(response => {
 				switch (response.status) {
 				case 200 : 
-					logged = true;
 					resolve('Account created');
 					break;
 				case 409 : resolve('username already created');

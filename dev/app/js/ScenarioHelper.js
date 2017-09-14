@@ -3,30 +3,44 @@ import axios from 'axios';
 const BASE_URL = 'http://localhost:8080';
 
 export function getScenario() {
-	return new Promise((resolve, reject) => {
-		const url = `${BASE_URL}/scenario`;
-		axios.get(url)
-			.then( response => {
-				console.log(`ScenarioHelper: response to GET /scenario = ${response.data} `);
-				resolve(response.data);
-			})
-			.catch (err => {
-				console.log(`ScenarioHelper: response to GET /scenario error = ${err} `);
-				reject(err);
-			});
-	});
+	const url = `${BASE_URL}/scenario`;
+	return get(url);
+}
+
+export function isScenarioScheduled(sid) {
+	const url = `${BASE_URL}/isscheduled/${sid}`;
+	return get(url);
+}
+
+export function scheduleScenario(sid) {
+	const url = `${BASE_URL}/schedule/${sid}`;
+	return get(url);
+}
+
+export function unscheduleScenario(sid) {
+	const url = `${BASE_URL}/unschedule/${sid}`;
+	return get(url);
+}
+
+export function playNowScenario(sid) {
+	const url = `${BASE_URL}/playnow/${sid}`;
+	return get(url);
 }
 
 export function getRunForScenario(sid) {
+	const url = `${BASE_URL}/run/${sid}`;
+	return get(url);
+}
+
+function get(url) {
 	return new Promise((resolve, reject) => {
-		const url = `${BASE_URL}/scenario/${sid}`;
 		axios.get(url)
 			.then( response => {
-				console.log(`ScenarioHelper: response to GET /scenario/:sid = ${response.date}`);
+				console.log(`Response to GET ${url} : ${response.data}`);
 				resolve(response.data);
 			})
 			.catch (err => {
-				console.log(`ScenarioHelper: response to GET /scenario/:sid error = ${err} `);
+				console.log(`Error to GET ${url} : ${err} `);
 				reject(err);
 			});
 	});

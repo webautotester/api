@@ -11,8 +11,9 @@ module.exports.init = (serverNames, webServer) => {
 			if (req.isAuthenticated()) {
 				MongoClient.connect(dbUrl)
 					.then(db => {
-						db.collection('scenario', (err, scenarioCollection) => {
+						db.collection('scenario', {strict:true}, (err, scenarioCollection) => {
 							if (err) {
+								winston.info('Collection scenarion not created yet !');
 								res.status(404).send(err).end();
 							} else {
 								scenarioCollection.find({uid:new ObjectID(user._id)}).toArray()

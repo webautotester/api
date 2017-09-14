@@ -6,25 +6,38 @@ module.exports.init = (serverNames, webServer) => {
 	const dbUrl = `mongodb://${serverNames.mongoServerName}:27017/wat_storage`;
 	webServer
 		.get('/run/:sid', (req, res) => {
-			var user = req.user;
-			var sid = new ObjectID(req.params.sid);
+			winston.info(`GET /run/${req.params.sid}`);
+			var sidID = new ObjectID(req.params.sid);
 			const N = 10;
 			if (req.isAuthenticated()) {
 				MongoClient.connect(dbUrl)
 					.then(db => {
-						db.collection('run', (err, runCollection) => {
+						db.collection('run', {strict:true}, (err, runCollection) => {
 							if (err) {
 								res.status(404).send(err).end();
 							} else {
-								runCollection.find({uid:new ObjectID(user._id), sid:sid}).skip(db.collection.count() - N).toArray()
+								winston.info(JSON.stringify(sidID));
+								var cursor = runCollection.find({sid:sidID});
+								winston.info('Got Run Cursor');
+								cursor.count()
+									.then( count => {
+										winston.info(`Count ${count} runs`);
+										if (count > N) {
+											return cursor.skip(count - N).toArray();
+										} else {
+											return cursor.toArray();
+										}
+									})
 									.then(runsArray => {
 										res.status(200).send(runsArray).end();
-									}).catch(err => {
+										db.close();
+									})
+									.catch(err => {
 										res.status(500).send(err).end();
+										db.close();
 									});
 							}
 						});
-						db.close();
 					}).catch(err => {
 						winston.info(err);
 						res.status(500).send(err).end;
