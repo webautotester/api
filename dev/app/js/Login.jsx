@@ -31,14 +31,12 @@ export default class Login extends React.Component {
 					password: prevState.credential.password
 				},
 				message: null};
-				break;
 			case 'password' : return {
 				redirect: false,
 				credential: {
 					username: prevState.credential.username, 
 					password: eventValue},
 				message: null};
-				break;
 			}
 		});
 	}
