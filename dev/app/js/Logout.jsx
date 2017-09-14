@@ -14,12 +14,18 @@ export default class Logout extends React.Component {
 
 	handleClick(event) {
 		event.preventDefault();
-		var logged = logout();
-		this.setState( prevState => {
-			return {
-				redirect : !logged,
-			};
-		});
+		logout()
+			.then( (response) => {
+				console.log(response);
+				this.setState( () => {
+					return {
+						redirect : true,
+					};
+				});
+			})
+			.catch(err => {
+				console.log(err);
+			});
 	}
 
 	render() {
@@ -28,7 +34,7 @@ export default class Logout extends React.Component {
 		}
 		else {
 			if (isLoggedIn()) {
-				return (<a onClick={this.handleClick}> Loggout ? </a>);
+				return (<button onClick={this.handleClick}> Loggout ? </button>);
 			} else {
 				return (
 					<div> Not logged </div>
