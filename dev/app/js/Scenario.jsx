@@ -91,7 +91,7 @@ export default class Scenario extends React.Component {
 
 	render() {
 		console.log('render');
-		var runs = this.state.runs.map( (run) => <li key={run._id}>{run.result} - {run.date} </li>);
+		var runs = this.state.runs.map( (run) => <li key={run._id}>{run.isSuccess} - {run.date} </li>);
 		var actions = this.state.scenario.actions.map( (action, i) => <li key={i}>{action.type}</li>);
 		let isScheduled;
 		if (this.state.isScheduled) {
