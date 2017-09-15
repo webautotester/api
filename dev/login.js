@@ -121,13 +121,7 @@ module.exports.init = function(serverNames, webServer) {
 
 	webServer.get('/logout', (req, res)=> {
 		req.logOut();
-		req.session.destroy( (err) => {
-			if (!err) {
-				res.status(200).clearCookie('session', {path: '/'}).json({status: 'Success'});
-			} else {
-				// handle error case...
-			}
-
-		});
+		req.session = null;
+		res.status(200).clearCookie('session', {path: '/'}).json({status: 'Success'});
 	});
 };
