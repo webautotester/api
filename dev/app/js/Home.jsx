@@ -1,5 +1,6 @@
 import React from 'react';
 import {isLoggedIn} from './AuthService.js';
+import { PageHeader } from 'react-bootstrap';
 
 export default class Home extends React.Component {
 
@@ -10,7 +11,7 @@ export default class Home extends React.Component {
 		}
 		return (
 			<div>
-				<h1>Web Automatic Tester</h1>
+				<PageHeader> WAT <small> Web Automatic Tester</small></PageHeader>
 				<span>
                 WAT Tester allows you to easily define your own E2E tests and to run them on the Cloud.
 				</span>

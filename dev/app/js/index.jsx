@@ -7,19 +7,44 @@ import Login from './Login.jsx';
 import Signin from './Signin.jsx';
 import Logout from './Logout.jsx';
 
+import { Nav, Navbar,NavItem } from 'react-bootstrap';
+import { LinkContainer } from 'react-router-bootstrap';
+
+
 class App extends React.Component {
+
+	constructor(props) {
+		super(props);
+	}
+
+
 	render () {
-    
 		return (
 			<Router history={browserHistory}>
 				<div>
-					<ul>
-						<li><Link to="/">Home</Link></li>
-						<li><Link to="/signin">Signin</Link></li>
-						<li><Link to="/login">Login</Link></li>
-						<li><Link to="/logout">Logout</Link></li>
-						<li><Link to="/scenario">Scenario</Link></li>
-					</ul>
+					<Navbar>
+						<Navbar.Header>
+							<Navbar.Brand>
+								<LinkContainer to="/">
+									<NavItem eventKey={1}>Home</NavItem>
+								</LinkContainer>
+							</Navbar.Brand>
+						</Navbar.Header>
+						<Nav>
+							<LinkContainer to="/signin" >
+								<NavItem eventKey={2}>Signin</NavItem>
+							</LinkContainer>
+							<LinkContainer to="/login" >
+								<NavItem eventKey={3}>Login</NavItem>
+							</LinkContainer>
+							<LinkContainer to="/logout" >
+								<NavItem eventKey={4}>Logout</NavItem>
+							</LinkContainer>
+							<LinkContainer to="/scenario" >
+								<NavItem eventKey={5}>Scenario</NavItem>
+							</LinkContainer>
+						</Nav>
+					</Navbar>
           
 					<Route exact path="/" component={Home}/>
 					<Route path="/login" component={Login}/>

@@ -2,6 +2,8 @@ import React from 'react';
 import {isLoggedIn, logout} from './AuthService.js';
 import { Redirect } from 'react-router-dom';
 
+import { Button, Alert} from 'react-bootstrap';
+
 export default class Logout extends React.Component {
 
 	constructor(props) {
@@ -34,10 +36,12 @@ export default class Logout extends React.Component {
 		}
 		else {
 			if (isLoggedIn()) {
-				return (<button onClick={this.handleClick}> Loggout ? </button>);
+				return (<Button bsStyle="warning" bsSize="large" onClick={this.handleClick}> Loggout ? </Button>);
 			} else {
 				return (
-					<div> Not logged </div>
+					<Alert bsStyle="warning">
+						<strong>You are not logged in !</strong>
+					</Alert>
 				);
 			}
 		}

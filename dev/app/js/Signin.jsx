@@ -1,6 +1,8 @@
 import React from 'react';
 import {isLoggedIn, signin} from './AuthService.js';
 
+import { FormGroup, FormControl, ControlLabel, Button, Alert } from 'react-bootstrap';
+
 export default class Login extends React.Component {
 
 	constructor(props) {
@@ -62,23 +64,22 @@ export default class Login extends React.Component {
 		console.log('render');
 		if (isLoggedIn()) {
 			return (
-				<div> You are logged ! </div>
+				<Alert bsStyle="success">
+					<strong>You are already logged in !</strong>
+				</Alert>
 			);
 		} else {
 			return (
 				<form onSubmit={this.handleSubmit}>
-					<div>
-						<label>Username:</label>
-						<input type="text" id="username" value={this.state.username} onChange={this.handleChange}/>
-					</div>
-					<div>
-						<label>Password:</label>
-						<input type="password" id="password" value={this.state.password} onChange={this.handleChange}/>
-					</div>
-					<div>
-						<input type="submit" value="Signin !"/>
-					</div>
-					<span>{this.state.message}</span>
+					<FormGroup controlId="formUserName">
+						<ControlLabel>Username</ControlLabel>
+						<FormControl id="username" type="text" value={this.state.username} onChange={this.handleChange}/>
+					</FormGroup>
+					<FormGroup controlId="formPassword">
+						<ControlLabel>Password</ControlLabel>
+						<FormControl id="password" type="password" value={this.state.password} onChange={this.handleChange}/>
+					</FormGroup>
+					<Button type="submit">Signin</Button>
 				</form>
 			);
 		}

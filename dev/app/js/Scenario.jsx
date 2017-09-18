@@ -1,6 +1,8 @@
 import React from 'react';
 import {getRunForScenario, isScenarioScheduled, scheduleScenario, unscheduleScenario, playNowScenario, pushScenario, removeScenario} from './ScenarioHelper.js';
 
+import { Panel, Col, Alert, Button } from 'react-bootstrap';
+
 export default class Scenario extends React.Component {
 
 	constructor(props) {
@@ -14,7 +16,7 @@ export default class Scenario extends React.Component {
 			isScheduled : null,
 			runs: []
 		};
-		console.log(this.state);
+		//console.log(this.props.indice);
 		this.handleChangeWait = this.handleChangeWait.bind(this);
 		this.onClickSchedule = this.onClickSchedule.bind(this);
 		this.onClickUnschedule = this.onClickUnschedule.bind(this);
@@ -38,7 +40,7 @@ export default class Scenario extends React.Component {
 				});
 			})
 			.catch(err => {
-				console.log(err);
+				//console.log(err);
 				this.setState( (prevState) => {
 					return {
 						scenario: prevState.scenario,
@@ -51,14 +53,14 @@ export default class Scenario extends React.Component {
 
 	handleChangeWait(event) {
 		var wait = event.target.value;
-		console.log(`wait = ${wait}`);
+		//console.log(`wait = ${wait}`);
 		this.state.scenario.wait = wait;
 		pushScenario(this.state.scenario)
 			.then( (response) => {
-				console.log(`pushScenario: ${response}`);
+				//console.log(`pushScenario: ${response}`);
 			})
 			.catch( (err) => {
-				console.log(`pushScenario error: ${err}`);
+				//console.log(`pushScenario error: ${err}`);
 			});
 	}
 
@@ -74,7 +76,7 @@ export default class Scenario extends React.Component {
 				});
 			})
 			.catch( err => {
-				console.log(err);
+				//console.log(err);
 			});
 	}
 
@@ -90,7 +92,7 @@ export default class Scenario extends React.Component {
 				});
 			})
 			.catch( err => {
-				console.log(err);
+				//console.log(err);
 			});
 
 	}
@@ -98,26 +100,27 @@ export default class Scenario extends React.Component {
 	onClickPlayNow() {
 		playNowScenario(this.state.scenario._id)
 			.then( msg => {
-				console.log(msg);
+				//console.log(msg);
 			})
 			.catch( err => {
-				console.log(err);
+				//console.log(err);
 			});
 	}
 
 	onClickRemoveScenario() {
-		console.log('remove');
+		//console.log('remove');
 		removeScenario(this.state.scenario._id)
 			.then( msg => {
-				console.log(msg);
+				//console.log(msg);
 			})
 			.catch( err => {
-				console.log(err);
+				//console.log(err);
 			});
 	}
 
 	render() {
-		console.log('render');
+		//console.log('render');
+
 		var runs = this.state.runs.map( (run) => <li key={run._id}>{run.isSuccess ? 'success' : 'failure'} - {run.date} </li>);
 		var actions = this.state.scenario.actions.map( (action, i) => <li key={i}>{action.type}</li>);
 		let isScheduled;
@@ -126,18 +129,27 @@ export default class Scenario extends React.Component {
 		} else {
 			isScheduled = 'not scheduled';
 		}
+
+		const divProps = Object.assign({}, this.props);
+		delete divProps.indice;
+		delete divProps.scenario;
+
+		const head = `${this.props.indice} - Scenario (${this.state.scenario._id}) - URL : ${this.state.scenario.actions[0].url}`;
+		
 		return (
-			<div>
-				<div>
-					<h1>Scenario</h1>
-					<span>Id = {this.state.scenario._id} is <b>{isScheduled}</b></span>
-					<button onClick={this.onClickRemoveScenario}>delete</button>
-				</div>
-				<div>
+			<Panel header={head} {...divProps} >
+				<Col xs={12} md={8} >
+					<Alert bsStyle="info">This Scenario is <b>{isScheduled}</b></Alert>
+				</Col>
+				<Col xs={12} md={4} >
+					<Button bsStyle="danger" bsSize="large" onClick={this.onClickRemoveScenario}>delete</Button>
+				</Col>
+				
+				<Col xs={12} md={8} >
 					<h2>Actions</h2>
 					<ul>{actions}</ul>
-				</div>
-				<div>
+				</Col>
+				<Col xs={12} md={8} >
 					<h2>Configuration</h2>
 					<div>
 						WAIT TIME (after each action):
@@ -145,21 +157,17 @@ export default class Scenario extends React.Component {
 							<input id='wait' onChange={this.handleChangeWait} type='number' defaultValue={this.state.scenario.wait}/>
 						</div>
 					</div>
-					<div>
-						ASSERT (To come):
-					</div>
-					
-				</div>
-				<div>
+				</Col>
+				<Col xs={12} md={8} >
 					<button onClick={this.onClickPlayNow}>Play Now</button>
 					<button onClick={this.onClickSchedule}>Schedule</button>
 					<button onClick={this.onClickUnschedule}>Unschedule</button>
-				</div>
-				<div>
+				</Col>
+				<Col xs={12} md={8} >
 					<h2>Last 10 Runs</h2>
 					<ul>{runs}</ul>
-				</div>
-			</div>
+				</Col>
+			</Panel>
 		);
 	}
 

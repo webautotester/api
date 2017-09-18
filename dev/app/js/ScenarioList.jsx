@@ -3,6 +3,8 @@ import {isLoggedIn} from './AuthService.js';
 import {getScenario, pushScenario} from './ScenarioHelper.js';
 import Scenario from './Scenario.jsx';
 
+import { PageHeader, Accordion, Col } from 'react-bootstrap';
+
 export default class ScenarioList extends React.Component {
 
 	constructor(props) {
@@ -14,19 +16,19 @@ export default class ScenarioList extends React.Component {
 	}
 
 	handleChange(event) {
-		console.log('File did change');
+		//console.log('File did change');
 		event.preventDefault();
 		let reader = new FileReader();
 		let file = event.target.files[0];
 		reader.onloadend = () => {
 			pushScenario(JSON.parse(reader.result))
 				.then(() => {
-					console.log('will get after post');
+					//console.log('will get after post');
 					return getScenario();
 				})
 				.then((fetchedScenario) => {
-					console.log('fetched');
-					console.log(JSON.stringify(fetchedScenario));
+					//console.log('fetched');
+					//console.log(JSON.stringify(fetchedScenario));
 					this.setState( () => {
 						return {
 							scenarii: fetchedScenario
@@ -46,10 +48,10 @@ export default class ScenarioList extends React.Component {
 
 	componentDidMount() {
 		if (isLoggedIn()) {
-			console.log('Scenario and logged');
+			//console.log('Scenario and logged');
 			getScenario()
 				.then(fetchedScenarii => {
-					console.log('fetched');
+					//console.log('fetched');
 					this.setState( () => {
 						return {
 							scenarii: fetchedScenarii
@@ -57,7 +59,7 @@ export default class ScenarioList extends React.Component {
 					});
 				})
 				.catch((err) => {
-					console.log(`error:${err}`);
+					//console.log(`error:${err}`);
 					this.setState( () => {
 						return {
 							scenarii: []
@@ -68,33 +70,28 @@ export default class ScenarioList extends React.Component {
 	}
 
 	render() {
-		console.log('render');
+		//console.log('render');
 		if (isLoggedIn()) {
-			console.log('logged in');
-			console.log(JSON.stringify(this.state.scenarii));
-			var scenarii = this.state.scenarii.map( (scenario) => <Scenario key={scenario._id} scenario={scenario} />);
+			//console.log('logged in');
+			//console.log(JSON.stringify(this.state.scenarii));
+			var scenarii = this.state.scenarii.map( (scenario,i) => <Scenario indice={i+1} scenario={scenario} key={scenario._id} eventKey={i}  />);
+			// var scenarii = this.state.scenarii.map( (scenario,i) => 
+			// 	<Panel header={scenario._id} eventKey={i}>
+			// 		<Scenario indice={i} scenario={scenario} />
+			// 	</Panel>
+			// );
       
 			console.log(scenarii);
 			return (
-				<div>
-					<div>
-						<h1>Your scenario</h1>
-						<ul>{scenarii}</ul>
-					</div>
-					<form onSubmit={this.handleSubmit}>
-						<div>
-							<input type="file" id="jsonscenario" accept=".json" value={this.state.username} onChange={this.handleChange}/>
-						</div>
-					</form>
-					<div>{this.state.message}</div>
-				</div>
+				<Col xs={12} md={12} >
+					<PageHeader>Your scenario</PageHeader>
+					<Accordion>{scenarii}</Accordion>
+				</Col>
 			);
 		} else {
-			return (
-				<div>
-          Please Login to see your scenario.
-				</div>
-			);
+			return (<Alert bsStyle="warning">
+				<strong>You are not yet logged in !</strong>
+			</Alert>);
 		}
 	}
 

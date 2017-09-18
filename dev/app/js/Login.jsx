@@ -2,6 +2,8 @@ import React from 'react';
 import {isLoggedIn, login} from './AuthService.js';
 import { Redirect } from 'react-router-dom';
 
+import { FormGroup, FormControl, ControlLabel, Button, Alert } from 'react-bootstrap';
+
 export default class Login extends React.Component {
 
 	constructor(props) {
@@ -71,22 +73,21 @@ export default class Login extends React.Component {
 			return <Redirect to="/"/>;
 		} else {
 			if (isLoggedIn()) {
-				return <div> Already logged ! </div>;
+				return (<Alert bsStyle="success">
+					<strong>You are already logged in !</strong>
+				</Alert>);
 			} else {
 				return (
 					<form onSubmit={this.handleSubmit}>
-						<div>
-							<label>Username:</label>
-							<input type="text" id="username" value={this.state.username} onChange={this.handleChange}/>
-						</div>
-						<div>
-							<label>Password:</label>
-							<input type="password" id="password" value={this.state.password} onChange={this.handleChange}/>
-						</div>
-						<div>
-							<input type="submit" value="Log In"/>
-						</div>
-						<span>{this.state.message}</span>
+						<FormGroup controlId="formUserName">
+							<ControlLabel>Username</ControlLabel>
+							<FormControl id="username" type="text" value={this.state.username} onChange={this.handleChange}/>
+						</FormGroup>
+						<FormGroup controlId="formPassword">
+							<ControlLabel>Password</ControlLabel>
+							<FormControl id="password" type="password" value={this.state.password} onChange={this.handleChange}/>
+						</FormGroup>
+						<Button type="submit">Log In</Button>
 					</form>
 				);
 			}
