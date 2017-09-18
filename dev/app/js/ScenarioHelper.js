@@ -9,6 +9,21 @@ export function getScenario() {
 	return get(url);
 }
 
+export function removeScenario(sid) {
+	const url = `${BASE_URL}/scenario/${sid}`;
+	return new Promise((resolve, reject) => {
+		axios.delete(url)
+			.then( response => {
+				console.log(`Response to DELETE ${url} : ${response.data}`);
+				resolve(response.data);
+			})
+			.catch (err => {
+				console.log(`Error to DELETE ${url} : ${err} `);
+				reject(err);
+			});
+	});
+}
+
 export function isScenarioScheduled(sid) {
 	const url = `${BASE_URL}/isscheduled/${sid}`;
 	return get(url);

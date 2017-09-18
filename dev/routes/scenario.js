@@ -82,4 +82,37 @@ module.exports.init = (serverNames, webServer) => {
 				res.status(401).send('access denied').end();
 			}
 		});
+	
+	webServer
+		.delete('/scenario/:sid',(req, res) => {
+			if (req.isAuthenticated()) {
+				MongoClient.connect(dbUrl)
+					.then(db => {
+						db.collection('scenario', {strict:true}, (err, scenarioCollection) => {
+							if (err) {
+								winston.info('Collection scenarion not created yet !');
+								res.status(404).send(err).end();
+							} else {
+								scenarioCollection.remove({_id:new ObjectID(req.params.sid)})
+									.then(() => {
+										winston.info('RouteScenario: response to Delete ');
+										res.status(200).send().end();
+										db.close();
+									})
+									.catch(err => {
+										winston.error(`RouteScenario: response to Delete = ${err}`);
+										res.status(500).send(err).end();
+										db.close();
+									});
+							}
+						});
+					})
+					.catch(err => {
+						winston.info(err);
+						res.status(500).send(err).end;
+					});
+			} else {
+				res.status(401).send('access denied').end();
+			}
+		}); 
 };

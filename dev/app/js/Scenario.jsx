@@ -1,5 +1,5 @@
 import React from 'react';
-import {getRunForScenario, isScenarioScheduled, scheduleScenario, unscheduleScenario, playNowScenario, pushScenario} from './ScenarioHelper.js';
+import {getRunForScenario, isScenarioScheduled, scheduleScenario, unscheduleScenario, playNowScenario, pushScenario, removeScenario} from './ScenarioHelper.js';
 
 export default class Scenario extends React.Component {
 
@@ -19,6 +19,7 @@ export default class Scenario extends React.Component {
 		this.onClickSchedule = this.onClickSchedule.bind(this);
 		this.onClickUnschedule = this.onClickUnschedule.bind(this);
 		this.onClickPlayNow = this.onClickPlayNow.bind(this);
+		this.onClickRemoveScenario = this.onClickRemoveScenario.bind(this);
 	}
 
 	componentDidMount() {
@@ -48,8 +49,8 @@ export default class Scenario extends React.Component {
 			});
 	}
 
-	handleChangeWait() {
-		var wait = document.getElementById('wait').value;
+	handleChangeWait(event) {
+		var wait = event.target.value;
 		console.log(`wait = ${wait}`);
 		this.state.scenario.wait = wait;
 		pushScenario(this.state.scenario)
@@ -104,6 +105,17 @@ export default class Scenario extends React.Component {
 			});
 	}
 
+	onClickRemoveScenario() {
+		console.log('remove');
+		removeScenario(this.state.scenario._id)
+			.then( msg => {
+				console.log(msg);
+			})
+			.catch( err => {
+				console.log(err);
+			});
+	}
+
 	render() {
 		console.log('render');
 		var runs = this.state.runs.map( (run) => <li key={run._id}>{run.isSuccess ? 'success' : 'failure'} - {run.date} </li>);
@@ -119,6 +131,7 @@ export default class Scenario extends React.Component {
 				<div>
 					<h1>Scenario</h1>
 					<span>Id = {this.state.scenario._id} is <b>{isScheduled}</b></span>
+					<button onClick={this.onClickRemoveScenario}>delete</button>
 				</div>
 				<div>
 					<h2>Actions</h2>
@@ -133,15 +146,7 @@ export default class Scenario extends React.Component {
 						</div>
 					</div>
 					<div>
-						ASSERT:
-						<div>
-							<input type='checkbox' onChange={this.handleCheckAssert} id='checkAssert' name='checkAssert' value='checkAssert'/>
-    						<label htmlFor='checkAssert'>Do you want to check the following assert?</label>
-						</div>
-						<div>
-							CSS Selector: <input type='text' id='assertSelector'/>
-							Expected Value: <input type='text' id='assertExpectedValue'/>
-						</div>
+						ASSERT (To come):
 					</div>
 					
 				</div>
