@@ -72,7 +72,7 @@ export default class ScenarioList extends React.Component {
 		if (isLoggedIn()) {
 			console.log('logged in');
 			console.log(JSON.stringify(this.state.scenarii));
-			var scenarii = this.state.scenarii.map( (scenario) => <Scenario key={scenario._id} _id={scenario._id} actions={scenario.actions} />);
+			var scenarii = this.state.scenarii.map( (scenario) => <Scenario key={scenario._id} scenario={scenario} />);
       
 			console.log(scenarii);
 			return (

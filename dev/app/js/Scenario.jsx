@@ -1,19 +1,21 @@
 import React from 'react';
-import {getRunForScenario, isScenarioScheduled, scheduleScenario, unscheduleScenario, playNowScenario} from './ScenarioHelper.js';
+import {getRunForScenario, isScenarioScheduled, scheduleScenario, unscheduleScenario, playNowScenario, pushScenario} from './ScenarioHelper.js';
 
 export default class Scenario extends React.Component {
 
 	constructor(props) {
 		super(props);
+		let scenario = this.props.scenario;
+		if (! scenario.wait) {
+			scenario.wait = 0;
+		}
 		this.state = {
-			scenario : {
-				_id : this.props._id,
-				uid : this.props.uid,
-				actions : this.props.actions
-			},
+			scenario : scenario,
 			isScheduled : null,
 			runs: []
 		};
+		console.log(this.state);
+		this.handleChangeWait = this.handleChangeWait.bind(this);
 		this.onClickSchedule = this.onClickSchedule.bind(this);
 		this.onClickUnschedule = this.onClickUnschedule.bind(this);
 		this.onClickPlayNow = this.onClickPlayNow.bind(this);
@@ -43,6 +45,19 @@ export default class Scenario extends React.Component {
 						isScheduled: null
 					};
 				});
+			});
+	}
+
+	handleChangeWait() {
+		var wait = document.getElementById('wait').value;
+		console.log(`wait = ${wait}`);
+		this.state.scenario.wait = wait;
+		pushScenario(this.state.scenario)
+			.then( (response) => {
+				console.log(`pushScenario: ${response}`);
+			})
+			.catch( (err) => {
+				console.log(`pushScenario error: ${err}`);
 			});
 	}
 
@@ -108,6 +123,27 @@ export default class Scenario extends React.Component {
 				<div>
 					<h2>Actions</h2>
 					<ul>{actions}</ul>
+				</div>
+				<div>
+					<h2>Configuration</h2>
+					<div>
+						WAIT TIME (after each action):
+						<div>
+							<input id='wait' onChange={this.handleChangeWait} type='number' defaultValue={this.state.scenario.wait}/>
+						</div>
+					</div>
+					<div>
+						ASSERT:
+						<div>
+							<input type='checkbox' onChange={this.handleCheckAssert} id='checkAssert' name='checkAssert' value='checkAssert'/>
+    						<label htmlFor='checkAssert'>Do you want to check the following assert?</label>
+						</div>
+						<div>
+							CSS Selector: <input type='text' id='assertSelector'/>
+							Expected Value: <input type='text' id='assertExpectedValue'/>
+						</div>
+					</div>
+					
 				</div>
 				<div>
 					<button onClick={this.onClickPlayNow}>Play Now</button>

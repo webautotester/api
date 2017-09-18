@@ -37,53 +37,7 @@ module.exports.init = (serverNames, webServer) => {
 			} else {
 				res.status(401).send('access denied').end();
 			}
-		});
-
-	webServer
-		.post('/scenario/update_timeout', (req, res) => {
-			const user = req.user;
-			const time = req.body.time;
-			if (!req.body.scenario) {
-				res.status(500).send('scenario is missing').end();
-			}
-			const scenario = req.body.scenario;
-			if (req.isAuthenticated()) {
-				MongoClient.connect(dbUrl)
-					.then(db => {
-						db.collection('scenario', (err, scenarioCollection) => {
-							if (err) {
-								res.status(404).send(err).end();
-							} else {
-								const newScenario = new Scenario();
-								if (scenario._id === null || scenario._id === undefined) {
-									newScenario._id = new ObjectID();
-								} else {
-									newScenario._id = new ObjectID(scenario._id);
-								}
-								if (scenario.uid === null || scenario.uid === undefined) {
-									newScenario.uid = new ObjectID(user._id);
-								} else {
-									newScenario.uid = new ObjectID(newScenario.uid);
-								}
-								newScenario.actions = scenario.actions;
-								newScenario.addOrUpdateWait(time);
-
-								scenarioCollection.findOneAndReplace({_id:newScenario._id}, newScenario, {upsert:true})
-									.then(savedScenario => {
-										res.status(200).send(savedScenario).end();
-										db.close();
-									})
-									.catch(err => {
-										winston.error(err);
-										res.status(500).send(err).end();
-										db.close();
-									});
-
-							}
-						});
-					});
-			}
-		});
+		}); 
 
 	webServer
 		.post('/scenario',(req, res) => {
