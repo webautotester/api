@@ -1,6 +1,6 @@
 import React from 'react';
 import {render} from 'react-dom';
-import { BrowserRouter as Router, Route, browserHistory, Link} from 'react-router-dom';
+import { BrowserRouter as Router, Route, browserHistory} from 'react-router-dom';
 import Home from './Home.jsx';
 import ScenarioList from './ScenarioList.jsx';
 import Login from './Login.jsx';
