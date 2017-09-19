@@ -48,6 +48,7 @@ export default class Login extends React.Component {
 		var message = login(this.state.credential)
 			.then(response => {
 				console.log('connected !!!');
+				console.log(response);
 				this.setState( prevState => {
 					return {
 						redirect : true,
@@ -57,11 +58,12 @@ export default class Login extends React.Component {
 				});
 			})
 			.catch(err => {
+				console.log(err);
 				this.setState( prevState => {
 					return {
 						redirect: false,
 						credential: prevState.credential,
-						message: 'Invalid Login Password'
+						message: 'Invalid Username / Password'
 					};
 				});
 			});
@@ -77,17 +79,24 @@ export default class Login extends React.Component {
 					<strong>You are already logged in !</strong>
 				</Alert>);
 			} else {
+				let errorMessage;
+				if  (this.state.message) {
+					errorMessage = <Alert bsStyle="warning">
+						<strong>{this.state.message}</strong>
+					</Alert>;
+				}
 				return (
 					<form onSubmit={this.handleSubmit}>
-						<FormGroup controlId="formUserName">
+						<FormGroup>
 							<ControlLabel>Username</ControlLabel>
 							<FormControl id="username" type="text" value={this.state.username} onChange={this.handleChange}/>
 						</FormGroup>
-						<FormGroup controlId="formPassword">
+						<FormGroup>
 							<ControlLabel>Password</ControlLabel>
 							<FormControl id="password" type="password" value={this.state.password} onChange={this.handleChange}/>
 						</FormGroup>
 						<Button type="submit">Log In</Button>
+						{errorMessage}
 					</form>
 				);
 			}

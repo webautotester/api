@@ -69,17 +69,24 @@ export default class Login extends React.Component {
 				</Alert>
 			);
 		} else {
+			let errorMessage;
+			if (this.state.message) {
+				errorMessage = <Alert bsStyle="warning">
+					<strong>{this.state.message}}</strong>
+				</Alert>;
+			}
 			return (
 				<form onSubmit={this.handleSubmit}>
-					<FormGroup controlId="formUserName">
+					<FormGroup>
 						<ControlLabel>Username</ControlLabel>
 						<FormControl id="username" type="text" value={this.state.username} onChange={this.handleChange}/>
 					</FormGroup>
-					<FormGroup controlId="formPassword">
+					<FormGroup>
 						<ControlLabel>Password</ControlLabel>
 						<FormControl id="password" type="password" value={this.state.password} onChange={this.handleChange}/>
 					</FormGroup>
 					<Button type="submit">Signin</Button>
+					{errorMessage}
 				</form>
 			);
 		}

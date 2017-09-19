@@ -1,7 +1,7 @@
 import React from 'react';
 import {getRunForScenario, isScenarioScheduled, scheduleScenario, unscheduleScenario, playNowScenario, pushScenario, removeScenario} from './ScenarioHelper.js';
 
-import { Panel, Col, Alert, Button } from 'react-bootstrap';
+import { Panel, Col, Alert, Button, FormGroup, ControlLabel, FormControl } from 'react-bootstrap';
 
 export default class Scenario extends React.Component {
 
@@ -52,19 +52,30 @@ export default class Scenario extends React.Component {
 	}
 
 	handleChangeWait(event) {
-		var wait = event.target.value;
-		//console.log(`wait = ${wait}`);
-		this.state.scenario.wait = wait;
-		pushScenario(this.state.scenario)
+		event.preventDefault();
+		const waitControlId = `wait${this.state.scenario._id}`;
+		var wait = document.getElementById(waitControlId).value;
+		console.log(wait);
+		var newScenario = this.state.scenario;
+		newScenario.wait = wait;
+		pushScenario(newScenario)
 			.then( (response) => {
 				//console.log(`pushScenario: ${response}`);
+				this.setState( (prevState) => {
+					return {
+						scenario: newScenario,
+						runs: prevState.runs,
+						isScheduled: prevState.isScheduled
+					};
+				});
 			})
 			.catch( (err) => {
 				//console.log(`pushScenario error: ${err}`);
 			});
 	}
 
-	onClickSchedule() {
+	onClickSchedule(event) {
+		event.preventDefault();
 		scheduleScenario(this.state.scenario._id)
 			.then( () => {
 				this.setState( (prevState) => {
@@ -80,7 +91,8 @@ export default class Scenario extends React.Component {
 			});
 	}
 
-	onClickUnschedule() {
+	onClickUnschedule(event) {
+		event.preventDefault();
 		unscheduleScenario(this.state.scenario._id)
 			.then( () => {
 				this.setState( (prevState) => {
@@ -97,7 +109,8 @@ export default class Scenario extends React.Component {
 
 	}
 
-	onClickPlayNow() {
+	onClickPlayNow(event) {
+		event.preventDefault();
 		playNowScenario(this.state.scenario._id)
 			.then( msg => {
 				//console.log(msg);
@@ -107,7 +120,8 @@ export default class Scenario extends React.Component {
 			});
 	}
 
-	onClickRemoveScenario() {
+	onClickRemoveScenario(event) {
+		event.preventDefault();
 		//console.log('remove');
 		removeScenario(this.state.scenario._id)
 			.then( msg => {
@@ -135,6 +149,7 @@ export default class Scenario extends React.Component {
 		delete divProps.scenario;
 
 		const head = `${this.props.indice} - Scenario (${this.state.scenario._id}) - URL : ${this.state.scenario.actions[0].url}`;
+		const waitControlId = `wait${this.state.scenario._id}`;
 		
 		return (
 			<Panel header={head} {...divProps} >
@@ -146,22 +161,23 @@ export default class Scenario extends React.Component {
 				</Col>
 				
 				<Col xs={12} md={8} >
-					<h2>Actions</h2>
+					<h2>Actions of the scenario</h2>
 					<ul>{actions}</ul>
 				</Col>
 				<Col xs={12} md={8} >
 					<h2>Configuration</h2>
-					<div>
-						WAIT TIME (after each action):
-						<div>
-							<input id='wait' onChange={this.handleChangeWait} type='number' defaultValue={this.state.scenario.wait}/>
-						</div>
-					</div>
+					<form onSubmit={this.handleChangeWait}>
+						<FormGroup >
+							<ControlLabel>Wait time in ms (after each action)</ControlLabel>
+							<FormControl id={waitControlId} type="number" defaultValue={this.state.scenario.wait} />
+						</FormGroup>
+						<Button type="submit">Change Wait Time</Button>
+					</form>
 				</Col>
-				<Col xs={12} md={8} >
-					<button onClick={this.onClickPlayNow}>Play Now</button>
-					<button onClick={this.onClickSchedule}>Schedule</button>
-					<button onClick={this.onClickUnschedule}>Unschedule</button>
+				<Col xs={12} md={12} >
+					<Button onClick={this.onClickPlayNow}>Play Now</Button>
+					<Button onClick={this.onClickSchedule}>Schedule</Button>
+					<Button onClick={this.onClickUnschedule}>Unschedule</Button>
 				</Col>
 				<Col xs={12} md={8} >
 					<h2>Last 10 Runs</h2>

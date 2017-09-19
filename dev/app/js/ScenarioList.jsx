@@ -3,7 +3,7 @@ import {isLoggedIn} from './AuthService.js';
 import {getScenario, pushScenario} from './ScenarioHelper.js';
 import Scenario from './Scenario.jsx';
 
-import { PageHeader, Accordion, Col } from 'react-bootstrap';
+import { PageHeader, Accordion, Col, Alert } from 'react-bootstrap';
 
 export default class ScenarioList extends React.Component {
 
