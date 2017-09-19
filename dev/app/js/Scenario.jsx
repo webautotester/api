@@ -166,12 +166,11 @@ export default class Scenario extends React.Component {
 				</Col>
 				<Col xs={12} md={8} >
 					<h2>Configuration</h2>
-					<form onSubmit={this.handleChangeWait}>
+					<form>
 						<FormGroup >
 							<ControlLabel>Wait time in ms (after each action)</ControlLabel>
-							<FormControl id={waitControlId} type="number" defaultValue={this.state.scenario.wait} />
+							<FormControl id={waitControlId} type="number" defaultValue={this.state.scenario.wait} onChange={this.handleChangeWait}/>
 						</FormGroup>
-						<Button type="submit">Change Wait Time</Button>
 					</form>
 				</Col>
 				<Col xs={12} md={12} >
