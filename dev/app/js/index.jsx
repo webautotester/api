@@ -7,7 +7,7 @@ import Login from './Login.jsx';
 import Signin from './Signin.jsx';
 import Logout from './Logout.jsx';
 
-import { Nav, Navbar,NavItem } from 'react-bootstrap';
+import { Nav, Navbar,NavItem, Grid } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
 
@@ -45,12 +45,14 @@ class App extends React.Component {
 							</LinkContainer>
 						</Nav>
 					</Navbar>
-          
-					<Route exact path="/" component={Home}/>
-					<Route path="/login" component={Login}/>
-					<Route path="/signin" component={Signin}/>
-					<Route path="/logout" component={Logout}/>
-					<Route path="/scenario" component={ScenarioList}/>
+
+					<Grid>
+						<Route exact path="/" component={Home}/>
+						<Route path="/login" component={Login}/>
+						<Route path="/signin" component={Signin}/>
+						<Route path="/logout" component={Logout}/>
+						<Route path="/scenario" component={ScenarioList}/>
+					</Grid>
 				</div>
 			</Router>
 		);

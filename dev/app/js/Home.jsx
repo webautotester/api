@@ -1,6 +1,6 @@
 import React from 'react';
 import {isLoggedIn} from './AuthService.js';
-import { PageHeader, Alert } from 'react-bootstrap';
+import { PageHeader, Alert, Row } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
 export default class Home extends React.Component {
@@ -14,7 +14,7 @@ export default class Home extends React.Component {
 			</Alert>;
 		}
 		return (
-			<div>
+			<Row>
 				<PageHeader> WAT <small> Web Automatic Tester</small></PageHeader>
 				<h2>What WAT is about ?</h2>
 				<p>
@@ -32,7 +32,7 @@ export default class Home extends React.Component {
 				<p><a href="http://www.promyze.com">ProMyze</a> is developping WAT for testing Themis, and is proud to provide it.</p>
 				<p>WAT is open source. If you like it and want for more services, please star the <a href="https://github.com/webautotester/docker_compose"> WAT GitHub projet</a> or add an issue to the list</p>
 				{uRLoggedInMsg}
-			</div>
+			</Row>
 		);
 	}
 
