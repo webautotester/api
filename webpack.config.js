@@ -26,6 +26,8 @@ var config = {
 			{ from: './dev/routes/run.js', to: 'routes/run.js' },
 			{ from: './dev/routes/schedule.js', to: 'routes/schedule.js' },
 			{ from: './dev/app/index.html', to: 'app/index.html' },
+			{ from: './dev/app/img/success.png', to: 'app/img/success.png' },
+			{ from: './dev/app/img/failure.png', to: 'app/img/failure.png' },
 		]),
 	]
 };

@@ -14,7 +14,8 @@ export default class Scenario extends React.Component {
 		this.state = {
 			scenario : scenario,
 			isScheduled : null,
-			runs: []
+			runs: [],
+			time : new Date()
 		};
 		//console.log(this.props.indice);
 		this.handleChangeWait = this.handleChangeWait.bind(this);
@@ -35,7 +36,8 @@ export default class Scenario extends React.Component {
 					return {
 						scenario: prevState.scenario,
 						runs: fetchedRuns,
-						isScheduled: fetchedIsScheduled
+						isScheduled: fetchedIsScheduled,
+						time: prevState.time
 					};
 				});
 			})
@@ -45,10 +47,25 @@ export default class Scenario extends React.Component {
 					return {
 						scenario: prevState.scenario,
 						runs: [],
-						isScheduled: null
+						isScheduled: null,
+						time : prevState.time
 					};
 				});
 			});
+		
+		setInterval(
+			() => {
+				console.log('interval');
+				this.setState((prevState) => {
+					return { 
+						scenario: prevState.scenario,
+						runs: prevState.runs,
+						isScheduled: prevState.isScheduled,
+						time: Date.now()
+					};
+				});
+			}, 2000);
+		
 	}
 
 	handleChangeWait(event) {
@@ -65,7 +82,8 @@ export default class Scenario extends React.Component {
 					return {
 						scenario: newScenario,
 						runs: prevState.runs,
-						isScheduled: prevState.isScheduled
+						isScheduled: prevState.isScheduled,
+						time : prevState.time
 					};
 				});
 			})
@@ -82,7 +100,8 @@ export default class Scenario extends React.Component {
 					return {
 						scenario: prevState.scenario,
 						runs: prevState.runs,
-						isScheduled: true
+						isScheduled: true,
+						time : prevState.time
 					};
 				});
 			})
@@ -99,7 +118,8 @@ export default class Scenario extends React.Component {
 					return {
 						scenario: prevState.scenario,
 						runs: prevState.runs,
-						isScheduled: false
+						isScheduled: false,
+						time : prevState.time
 					};
 				});
 			})
@@ -135,7 +155,9 @@ export default class Scenario extends React.Component {
 	render() {
 		//console.log('render');
 
-		var runs = this.state.runs.map( (run) => <li key={run._id}>{run.isSuccess ? 'success' : 'failure'} - {run.date} </li>);
+		var success = <img src="../img/success.png"/>;
+		var failure = <img src="../img/failure.png"/>;
+		var runs = this.state.runs.map( (run) => <li key={run._id}>{run.isSuccess ? success : failure } at {run.date} </li>);
 		var actions = this.state.scenario.actions.map( (action, i) => <li key={i}>{action.type}</li>);
 		let isScheduled;
 		if (this.state.isScheduled) {
