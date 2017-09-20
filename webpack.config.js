@@ -28,6 +28,9 @@ var config = {
 			{ from: './dev/app/index.html', to: 'app/index.html' },
 			{ from: './dev/app/img/success.png', to: 'app/img/success.png' },
 			{ from: './dev/app/img/failure.png', to: 'app/img/failure.png' },
+			{ from: './dev/app/img/check.png', to: 'app/img/check.png' },
+			{ from: './dev/app/img/replay.png', to: 'app/img/replay.png' },
+			{ from: './dev/app/img/record.png', to: 'app/img/record.png' },
 		]),
 	]
 };

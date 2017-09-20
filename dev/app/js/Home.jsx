@@ -1,6 +1,6 @@
 import React from 'react';
 import {isLoggedIn} from './AuthService.js';
-import { PageHeader, Alert, Row } from 'react-bootstrap';
+import { PageHeader, Alert, Row, Col, Image } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
 export default class Home extends React.Component {
@@ -16,6 +16,20 @@ export default class Home extends React.Component {
 		return (
 			<Row>
 				<PageHeader> WAT <small> Web Automatic Tester</small></PageHeader>
+				<Row>
+					<Col sm={12} md={4}>
+						<div><Image src="../img/record.png" width="150" rounded /></div>
+						<div>Record your E2E Test Scenario by using our Chrome Plugin.</div>
+					</Col>
+					<Col sm={12} md={4}>
+						<div><Image src="../img/replay.png" width="150" rounded /></div>
+						<div>Replay your E2E Test Scenario on demand or scheduled every day.</div>
+					</Col>
+					<Col sm={12} md={4}>
+						<div><Image src="../img/check.png" width="150" rounded /></div>
+						<div>Check if your E2E Test Scenario is a success or a failure.</div>
+					</Col>
+				</Row>
 				<h2>What WAT is about ?</h2>
 				<p>
                 WAT allows you to easily record your own E2E tests on any website.
