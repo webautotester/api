@@ -29,13 +29,13 @@ export function isScenarioScheduled(sid) {
 	return get(url);
 }
 
-export function scheduleScenario(sid) {
-	const url = `${BASE_URL}/schedule/${sid}`;
-	return get(url);
-}
-
-export function unscheduleScenario(sid) {
-	const url = `${BASE_URL}/unschedule/${sid}`;
+export function scheduleScenario(sid, isScheduled) {
+	let url;
+	if (isScheduled) {
+		url = `${BASE_URL}/schedule/${sid}`;
+	} else {
+		url = `${BASE_URL}/unschedule/${sid}`;
+	}
 	return get(url);
 }
 

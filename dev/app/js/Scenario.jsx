@@ -1,7 +1,7 @@
 import React from 'react';
-import {getRunForScenario, isScenarioScheduled, scheduleScenario, unscheduleScenario, playNowScenario, pushScenario, removeScenario} from './ScenarioHelper.js';
+import {getRunForScenario, isScenarioScheduled, scheduleScenario, playNowScenario, pushScenario, removeScenario} from './ScenarioHelper.js';
 
-import { Panel, Col, Alert, Button, FormGroup, ControlLabel, FormControl, Modal } from 'react-bootstrap';
+import { Panel, Col, Alert, Button, FormGroup, ControlLabel, FormControl, Modal, Checkbox } from 'react-bootstrap';
 
 export default class Scenario extends React.Component {
 
@@ -13,7 +13,7 @@ export default class Scenario extends React.Component {
 		}
 		this.state = {
 			scenario : scenario,
-			isScheduled : null,
+			isScheduled : false,
 			runs: [],
 			time : new Date(),
 			showPlayNowModal: false
@@ -21,7 +21,6 @@ export default class Scenario extends React.Component {
 		//console.log(this.props.indice);
 		this.handleChangeWait = this.handleChangeWait.bind(this);
 		this.onClickSchedule = this.onClickSchedule.bind(this);
-		this.onClickUnschedule = this.onClickUnschedule.bind(this);
 		this.onClickPlayNow = this.onClickPlayNow.bind(this);
 		this.onClickRemoveScenario = this.onClickRemoveScenario.bind(this);
 		this.closePlayNowModal = this.closePlayNowModal.bind(this);
@@ -90,13 +89,13 @@ export default class Scenario extends React.Component {
 
 	onClickSchedule(event) {
 		event.preventDefault();
-		scheduleScenario(this.state.scenario._id)
+		scheduleScenario(this.state.scenario._id, !this.state.isScheduled)
 			.then( () => {
 				this.setState( (prevState) => {
 					return {
 						scenario: prevState.scenario,
 						runs: prevState.runs,
-						isScheduled: true,
+						isScheduled: !prevState.isScheduled,
 						time : prevState.time,
 						showPlayNowModal: prevState.showPlayNowModal
 					};
@@ -105,26 +104,6 @@ export default class Scenario extends React.Component {
 			.catch( err => {
 				//console.log(err);
 			});
-	}
-
-	onClickUnschedule(event) {
-		event.preventDefault();
-		unscheduleScenario(this.state.scenario._id)
-			.then( () => {
-				this.setState( (prevState) => {
-					return {
-						scenario: prevState.scenario,
-						runs: prevState.runs,
-						isScheduled: false,
-						time : prevState.time,
-						showPlayNowModal: prevState.showPlayNowModal
-					};
-				});
-			})
-			.catch( err => {
-				//console.log(err);
-			});
-
 	}
 
 	onClickPlayNow(event) {
@@ -216,8 +195,10 @@ export default class Scenario extends React.Component {
 				</Col>
 				<Col xs={12} md={12} >
 					<Button onClick={this.onClickPlayNow}>Play Now</Button>
-					<Button onClick={this.onClickSchedule}>Schedule</Button>
-					<Button onClick={this.onClickUnschedule}>Unschedule</Button>
+				</Col>
+				<Col xs={12} md={12} >
+					<Checkbox checked={this.state.isScheduled} onClick={this.onClickSchedule}> Scheduling (once per day, each morning)
+					</Checkbox>
 				</Col>
 				<Col xs={12} md={8} >
 					<h2>Last 10 Runs</h2>
