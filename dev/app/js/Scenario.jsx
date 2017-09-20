@@ -1,7 +1,7 @@
 import React from 'react';
 import {getRunForScenario, isScenarioScheduled, scheduleScenario, unscheduleScenario, playNowScenario, pushScenario, removeScenario} from './ScenarioHelper.js';
 
-import { Panel, Col, Alert, Button, FormGroup, ControlLabel, FormControl } from 'react-bootstrap';
+import { Panel, Col, Alert, Button, FormGroup, ControlLabel, FormControl, Modal } from 'react-bootstrap';
 
 export default class Scenario extends React.Component {
 
@@ -15,7 +15,8 @@ export default class Scenario extends React.Component {
 			scenario : scenario,
 			isScheduled : null,
 			runs: [],
-			time : new Date()
+			time : new Date(),
+			showPlayNowModal: false
 		};
 		//console.log(this.props.indice);
 		this.handleChangeWait = this.handleChangeWait.bind(this);
@@ -23,48 +24,42 @@ export default class Scenario extends React.Component {
 		this.onClickUnschedule = this.onClickUnschedule.bind(this);
 		this.onClickPlayNow = this.onClickPlayNow.bind(this);
 		this.onClickRemoveScenario = this.onClickRemoveScenario.bind(this);
+		this.closePlayNowModal = this.closePlayNowModal.bind(this);
 	}
 
 	componentDidMount() {
-		var runPromise = getRunForScenario(this.state.scenario._id);
-		var schedulePromise = isScenarioScheduled(this.state.scenario._id);
-		Promise.all([runPromise, schedulePromise])
-			.then(promisesResult => {
-				const fetchedRuns = promisesResult[0];
-				const fetchedIsScheduled = promisesResult[1];
-				this.setState( (prevState) => {
-					return {
-						scenario: prevState.scenario,
-						runs: fetchedRuns,
-						isScheduled: fetchedIsScheduled,
-						time: prevState.time
-					};
-				});
-			})
-			.catch(err => {
-				//console.log(err);
-				this.setState( (prevState) => {
-					return {
-						scenario: prevState.scenario,
-						runs: [],
-						isScheduled: null,
-						time : prevState.time
-					};
-				});
-			});
-		
 		setInterval(
 			() => {
 				console.log('interval');
-				this.setState((prevState) => {
-					return { 
-						scenario: prevState.scenario,
-						runs: prevState.runs,
-						isScheduled: prevState.isScheduled,
-						time: Date.now()
-					};
-				});
-			}, 2000);
+				var runPromise = getRunForScenario(this.state.scenario._id);
+				var schedulePromise = isScenarioScheduled(this.state.scenario._id);
+				Promise.all([runPromise, schedulePromise])
+					.then(promisesResult => {
+						const fetchedRuns = promisesResult[0];
+						const fetchedIsScheduled = promisesResult[1];
+						this.setState( (prevState) => {
+							return {
+								scenario: prevState.scenario,
+								runs: fetchedRuns,
+								isScheduled: fetchedIsScheduled,
+								time: prevState.time,
+								showPlayNowModal: prevState.showPlayNowModal
+							};
+						});
+					})
+					.catch(err => {
+						//console.log(err);
+						this.setState( (prevState) => {
+							return {
+								scenario: prevState.scenario,
+								runs: [],
+								isScheduled: null,
+								time : prevState.time,
+								showPlayNowModal: prevState.showPlayNowModal
+							};
+						});
+					});
+			}, 3000);
 		
 	}
 
@@ -83,7 +78,8 @@ export default class Scenario extends React.Component {
 						scenario: newScenario,
 						runs: prevState.runs,
 						isScheduled: prevState.isScheduled,
-						time : prevState.time
+						time : prevState.time,
+						showPlayNowModal: prevState.showPlayNowModal
 					};
 				});
 			})
@@ -101,7 +97,8 @@ export default class Scenario extends React.Component {
 						scenario: prevState.scenario,
 						runs: prevState.runs,
 						isScheduled: true,
-						time : prevState.time
+						time : prevState.time,
+						showPlayNowModal: prevState.showPlayNowModal
 					};
 				});
 			})
@@ -119,7 +116,8 @@ export default class Scenario extends React.Component {
 						scenario: prevState.scenario,
 						runs: prevState.runs,
 						isScheduled: false,
-						time : prevState.time
+						time : prevState.time,
+						showPlayNowModal: prevState.showPlayNowModal
 					};
 				});
 			})
@@ -134,6 +132,15 @@ export default class Scenario extends React.Component {
 		playNowScenario(this.state.scenario._id)
 			.then( msg => {
 				//console.log(msg);
+				this.setState( (prevState) => {
+					return {
+						scenario: prevState.scenario,
+						runs: prevState.runs,
+						isScheduled: prevState.isScheduled,
+						time : prevState.time,
+						showPlayNowModal: true
+					};
+				});
 			})
 			.catch( err => {
 				//console.log(err);
@@ -150,6 +157,18 @@ export default class Scenario extends React.Component {
 			.catch( err => {
 				//console.log(err);
 			});
+	}
+
+	closePlayNowModal() {
+		this.setState((prevState) => {
+			return { 
+				scenario: prevState.scenario,
+				runs: prevState.runs,
+				isScheduled: prevState.isScheduled,
+				time: Date.now(),
+				showPlayNowModal: false
+			};
+		});
 	}
 
 	render() {
@@ -204,6 +223,19 @@ export default class Scenario extends React.Component {
 					<h2>Last 10 Runs</h2>
 					<ul>{runs}</ul>
 				</Col>
+
+				<Modal show={this.state.showPlayNowModal} onHide={this.closePlayNowModal}>
+					<Modal.Header closeButton>
+						<Modal.Title>Test Scenario Will Be Played </Modal.Title>
+					</Modal.Header>
+					<Modal.Body>
+						<p>The Scenario {this.state.scenario._id} has been requested to be played.</p>
+					</Modal.Body>
+					<Modal.Footer>
+						<Button onClick={this.closePlayNowModal}>Close</Button>
+					</Modal.Footer>
+				</Modal>
+
 			</Panel>
 		);
 	}
