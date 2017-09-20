@@ -21,6 +21,9 @@ RUN mkdir dev/app/js
 COPY dev/app/js/*.js dev/app/js/
 COPY dev/app/js/*.jsx dev/app/js/
 
+RUN mkdir dev/app/img
+COPY dev/app/img/*.png dev/app/img/
+
 RUN mkdir dev/routes
 COPY dev/routes/*.js dev/routes/
 
