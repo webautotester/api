@@ -47,26 +47,29 @@ export default class ScenarioList extends React.Component {
 	}
 
 	componentDidMount() {
-		if (isLoggedIn()) {
-			//console.log('Scenario and logged');
-			getScenario()
-				.then(fetchedScenarii => {
-					//console.log('fetched');
-					this.setState( () => {
-						return {
-							scenarii: fetchedScenarii
-						};
-					});
-				})
-				.catch((err) => {
-					//console.log(`error:${err}`);
-					this.setState( () => {
-						return {
-							scenarii: []
-						};
-					});
-				});
-		}
+		setInterval(
+			() => {
+				if (isLoggedIn()) {
+					//console.log('Scenario and logged');
+					getScenario()
+						.then(fetchedScenarii => {
+							//console.log('fetched');
+							this.setState( () => {
+								return {
+									scenarii: fetchedScenarii
+								};
+							});
+						})
+						.catch((err) => {
+							//console.log(`error:${err}`);
+							this.setState( () => {
+								return {
+									scenarii: []
+								};
+							});
+						});
+				}
+			}, 3000);
 	}
 
 	render() {
