@@ -34,6 +34,8 @@ COPY package.json .
 RUN npm install
 RUN npm run build
 
+COPY dev/app/img/demo.mp4 ops/app/img/
+
 WORKDIR /tmp/front/ops
 
 EXPOSE 8080
