@@ -5,7 +5,7 @@ const winston = require('winston');
 module.exports.init = (serverNames, webServer) => {
 	const dbUrl = `mongodb://${serverNames.mongoServerName}:27017/wat_storage`;
 	webServer
-		.get('/run/:sid', (req, res) => {
+		.get('/api/run/:sid', (req, res) => {
 			winston.info(`GET /run/${req.params.sid}`);
 			var sidID = new ObjectID(req.params.sid);
 			const N = 10;

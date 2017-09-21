@@ -6,7 +6,7 @@ const {Scenario} = require('wat_action_nightmare');
 module.exports.init = (serverNames, webServer) => {
 	const dbUrl = `mongodb://${serverNames.mongoServerName}:27017/wat_storage`;
 	webServer
-		.get('/scenario',(req, res) => {
+		.get('/api/scenario',(req, res) => {
 			var user = req.user;
 			if (req.isAuthenticated()) {
 				MongoClient.connect(dbUrl)
@@ -40,7 +40,7 @@ module.exports.init = (serverNames, webServer) => {
 		}); 
 
 	webServer
-		.post('/scenario',(req, res) => {
+		.post('/api/scenario',(req, res) => {
 			var user = req.user;
 			if (req.isAuthenticated()) {
 				MongoClient.connect(dbUrl)
@@ -84,7 +84,7 @@ module.exports.init = (serverNames, webServer) => {
 		});
 	
 	webServer
-		.delete('/scenario/:sid',(req, res) => {
+		.delete('/api/scenario/:sid',(req, res) => {
 			if (req.isAuthenticated()) {
 				MongoClient.connect(dbUrl)
 					.then(db => {

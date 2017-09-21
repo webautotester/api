@@ -8,7 +8,7 @@ var logged = false;
 
 export function login(credentials) {
 	return new Promise( (resolve, reject) => {
-		const url = `${BASE_URL}/login`;
+		const url = `${BASE_URL}/api/login`;
 		axios.post(url, credentials  )
 			.then( response => {
 				if (response.status === 401) {
@@ -29,7 +29,7 @@ export function login(credentials) {
 
 export function logout() {
 	return new Promise( (resolve, reject) => {
-		const url = `${BASE_URL}/logout`;
+		const url = `${BASE_URL}/api/logout`;
 		axios.get(url)
 			.then(response => {
 				logged = false;
@@ -47,7 +47,7 @@ export function isLoggedIn() {
 
 export function signin(credentials) {
 	return new Promise( (resolve, reject) => {
-		const url = `${BASE_URL}/signin`;
+		const url = `${BASE_URL}/api/signin`;
 		axios.post(url, credentials)
 			.then(response => {
 				switch (response.status) {

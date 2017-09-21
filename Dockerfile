@@ -38,7 +38,7 @@ COPY dev/app/img/demo.mp4 ops/app/img/
 
 WORKDIR /tmp/front/ops
 
-EXPOSE 8080
+EXPOSE 80
 
 CMD ["node","server.js","--mongo=mongo", "--scheduler=scheduler"]
 

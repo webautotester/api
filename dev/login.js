@@ -73,14 +73,14 @@ module.exports.init = function(serverNames, webServer) {
 
 
     
-	webServer.post('/login',
+	webServer.post('/api/login',
 		passport.authenticate('local'),
 		(req, res) => {
 			res.status(200).send(req.user).end();
 		}
 	);
 
-	webServer.post('/signin', (req, res) => {
+	webServer.post('/api/signin', (req, res) => {
 		MongoClient.connect(dbUrl).then(db => {
 			db.collection('user', (err, userCollection) => {
 				if (err) {
@@ -119,7 +119,7 @@ module.exports.init = function(serverNames, webServer) {
 
 	});
 
-	webServer.get('/logout', (req, res)=> {
+	webServer.get('/api/logout', (req, res)=> {
 		req.logOut();
 		req.session = null;
 		res.status(200).clearCookie('session', {path: '/'}).json({status: 'Success'});
