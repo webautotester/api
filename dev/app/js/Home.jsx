@@ -15,6 +15,7 @@ export default class Home extends React.Component {
 		}
 		return (
 			<Row>
+				<Alert bsStyle="success"><strong>WAT Is Currently Under Development !!!</strong></Alert>
 				<PageHeader> WAT <small> Web Automatic Tester</small></PageHeader>
 				<Row>
 					<Col sm={12} md={4}>
