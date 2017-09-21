@@ -72,7 +72,7 @@ export default class Login extends React.Component {
 			let errorMessage;
 			if (this.state.message) {
 				errorMessage = <Alert bsStyle="warning">
-					<strong>{this.state.message}}</strong>
+					<strong>{this.state.message}</strong>
 				</Alert>;
 			}
 			return (

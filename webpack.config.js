@@ -31,6 +31,7 @@ var config = {
 			{ from: './dev/app/img/check.png', to: 'app/img/check.png' },
 			{ from: './dev/app/img/replay.png', to: 'app/img/replay.png' },
 			{ from: './dev/app/img/record.png', to: 'app/img/record.png' },
+			{ from: './dev/app/img/demo.mp4', to: 'app/img/demo.mp4' }
 		]),
 	]
 };

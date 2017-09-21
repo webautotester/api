@@ -37,6 +37,13 @@ export default class Home extends React.Component {
 				You can even ask WAT to play them each morning and to be notified in case of failure.
 				</p>
 
+				<h2>Demo</h2>
+				<div>
+					<video src="../img/demo.mp4" autoPlay controls loop width="800"/>
+				</div>
+
+
+
 				<h2>How to use WAT ?</h2>
 				<p>First you need to <LinkContainer to="/signin"><a>Sign in !</a></LinkContainer> and then <LinkContainer to="/login"><a>Log in !</a></LinkContainer>.</p>
 				<p>Second you need to download our <a href="https://chrome.google.com/webstore/detail/wat-chrome-plugin/fopllklfdgccljiagdpeocpdnhlmlakc">Chrome Plugin Sign in !</a> and use it to record your E2E tests.</p>
