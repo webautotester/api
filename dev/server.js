@@ -12,7 +12,6 @@ var path = require('path');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var cookieSession = require('cookie-session');
-var history = require('connect-history-api-fallback');
 var applicationRoot = __dirname;
 var app = express();
 
@@ -50,7 +49,6 @@ runRoute.init(serverNames,app);
 const schedule = require('./routes/schedule.js');
 schedule.init(serverNames,app);
 
-//app.use(history());
 app.get('*', (req,res) => {
 	winston.info('get *');
 	res.sendFile(path.join(applicationRoot, './app/index.html'));
