@@ -18,7 +18,7 @@ export default class Logout extends React.Component {
 		event.preventDefault();
 		logout()
 			.then( (response) => {
-				console.log(response);
+				//console.log(response);
 				this.setState( () => {
 					return {
 						redirect : true,
@@ -26,7 +26,7 @@ export default class Logout extends React.Component {
 				});
 			})
 			.catch(err => {
-				console.log(err);
+				//console.log(err);
 			});
 	}
 

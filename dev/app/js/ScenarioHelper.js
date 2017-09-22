@@ -2,7 +2,7 @@ import axios from 'axios';
 
 //const BASE_URL = 'http://localhost:8080';
 const BASE_URL = location.protocol + '//' + location.hostname + (location.port ? ':'+location.port: '');
-console.log(`BASE_URL : ${BASE_URL}`);
+//console.log(`BASE_URL : ${BASE_URL}`);
 
 export function getScenario() {
 	const url = `${BASE_URL}/api/scenario`;
@@ -14,11 +14,11 @@ export function removeScenario(sid) {
 	return new Promise((resolve, reject) => {
 		axios.delete(url)
 			.then( response => {
-				console.log(`Response to DELETE ${url} : ${response.data}`);
+				//console.log(`Response to DELETE ${url} : ${response.data}`);
 				resolve(response.data);
 			})
 			.catch (err => {
-				console.log(`Error to DELETE ${url} : ${err} `);
+				//console.log(`Error to DELETE ${url} : ${err} `);
 				reject(err);
 			});
 	});
@@ -53,11 +53,11 @@ function get(url) {
 	return new Promise((resolve, reject) => {
 		axios.get(url)
 			.then( response => {
-				console.log(`Response to GET ${url} : ${response.data}`);
+				//console.log(`Response to GET ${url} : ${response.data}`);
 				resolve(response.data);
 			})
 			.catch (err => {
-				console.log(`Error to GET ${url} : ${err} `);
+				//console.log(`Error to GET ${url} : ${err} `);
 				reject(err);
 			});
 	});

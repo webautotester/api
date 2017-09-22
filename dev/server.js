@@ -13,6 +13,7 @@ var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var cookieSession = require('cookie-session');
 var applicationRoot = __dirname;
+const MongoClient = require('mongodb').MongoClient;
 var app = express();
 
 app.use(helmet());
@@ -37,23 +38,34 @@ app.use(function(req, res, next) {
 	next();
 });
 
-const loginRoute = require('./login.js');
-loginRoute.init(serverNames,app);
+const dbUrl = `mongodb://${serverNames.mongoServerName}:27017/wat_storage`;
 
-const scenarioRoute = require('./routes/scenario.js');
-scenarioRoute.init(serverNames,app);
+initRoutes();
 
-const runRoute = require('./routes/run.js');
-runRoute.init(serverNames,app);
+function initRoutes() {
+	MongoClient.connect(dbUrl)
+		.then(db => {
+			require('./login.js').init(serverNames,app,db);
+			require('./routes/scenario.js').init(serverNames,app,db);
+			require('./routes/run.js').init(serverNames,app,db);
+			require('./routes/schedule.js').init(serverNames,app,db);
 
-const schedule = require('./routes/schedule.js');
-schedule.init(serverNames,app);
+			app.get('*', (req,res) => {
+				winston.info('get *');
+				res.sendFile(path.join(applicationRoot, './app/index.html'));
+			});
 
-app.get('*', (req,res) => {
-	winston.info('get *');
-	res.sendFile(path.join(applicationRoot, './app/index.html'));
-});
+			const PORT = 80;
 
-app.listen(80, function() {
-	winston.info('WAT Front is listening on port 80');
-});
+			app.listen(PORT, function() {
+				winston.info(`WAT Front is listening on port ${PORT}`);
+			});
+		})
+		.catch((err) => {
+			winston.info(err);
+			setTimeout(() => {
+				initRoutes(); 
+			}, 3000);
+		});
+}
+

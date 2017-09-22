@@ -61,7 +61,7 @@ export default class Login extends React.Component {
 	}
 
 	render() {
-		console.log('render');
+		//console.log('render');
 		if (isLoggedIn()) {
 			return (
 				<Alert bsStyle="success">

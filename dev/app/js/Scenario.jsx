@@ -29,7 +29,7 @@ export default class Scenario extends React.Component {
 	componentDidMount() {
 		setInterval(
 			() => {
-				console.log('interval');
+				//console.log('interval');
 				var runPromise = getRunForScenario(this.state.scenario._id);
 				var schedulePromise = isScenarioScheduled(this.state.scenario._id);
 				Promise.all([runPromise, schedulePromise])
@@ -66,7 +66,7 @@ export default class Scenario extends React.Component {
 		event.preventDefault();
 		const waitControlId = `wait${this.state.scenario._id}`;
 		var wait = document.getElementById(waitControlId).value;
-		console.log(wait);
+		//console.log(wait);
 		var newScenario = this.state.scenario;
 		newScenario.wait = wait;
 		pushScenario(newScenario)

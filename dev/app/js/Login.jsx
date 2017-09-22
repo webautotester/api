@@ -21,7 +21,7 @@ export default class Login extends React.Component {
 	}
 
 	handleChange(event) {
-		console.log('handleChange');
+		//console.log('handleChange');
 		var eventID = event.target.id;
 		var eventValue = event.target.value;   
 		this.setState( (prevState) => {
@@ -47,8 +47,8 @@ export default class Login extends React.Component {
 		event.preventDefault();
 		var message = login(this.state.credential)
 			.then(response => {
-				console.log('connected !!!');
-				console.log(response);
+				//console.log('connected !!!');
+				//console.log(response);
 				this.setState( prevState => {
 					return {
 						redirect : true,
@@ -58,7 +58,7 @@ export default class Login extends React.Component {
 				});
 			})
 			.catch(err => {
-				console.log(err);
+				//console.log(err);
 				this.setState( prevState => {
 					return {
 						redirect: false,
@@ -70,7 +70,7 @@ export default class Login extends React.Component {
 	}
 
 	render() {
-		console.log(`redirect:${this.state.redirect}`);
+		//console.log(`redirect:${this.state.redirect}`);
 		if (this.state.redirect) {
 			return <Redirect to="/"/>;
 		} else {

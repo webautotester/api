@@ -2,7 +2,7 @@ import axios from 'axios';
 
 //const BASE_URL = 'http://localhost:8080';
 const BASE_URL = location.protocol + '//' + location.hostname + (location.port ? ':'+location.port: '');
-console.log(`BASE_URL : ${BASE_URL}`);
+//console.log(`BASE_URL : ${BASE_URL}`);
 
 var logged = false;
 
@@ -12,16 +12,16 @@ export function login(credentials) {
 		axios.post(url, credentials  )
 			.then( response => {
 				if (response.status === 401) {
-					console.log('incorrect');
+					//console.log('incorrect');
 					resolve(false);
 				} else {
-					console.log('correct');
+					//console.log('correct');
 					logged = true;
 					resolve(true);
 				}
 			})
 			.catch(() => {
-				console.log('incorrect');
+				//console.log('incorrect');
 				reject(false);
 			});
 	});

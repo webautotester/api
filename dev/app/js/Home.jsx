@@ -6,7 +6,7 @@ import { LinkContainer } from 'react-router-bootstrap';
 export default class Home extends React.Component {
 
 	render() {
-		console.log('render home');
+		//console.log('render home');
 		let uRLoggedInMsg = null;
 		if (isLoggedIn()) {
 			uRLoggedInMsg = <Alert bsStyle="success">

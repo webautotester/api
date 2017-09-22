@@ -26,19 +26,19 @@ module.exports.init = (serverNames, webServer) => {
 		});
         
 	function forwardGET(url, res, req) {
-		winston.info(`Forward GET ${url}`);
+		//winston.info(`Forward GET ${url}`);
 		if (req.isAuthenticated()) {
 			axios.get(url)
 				.then( forwardedRes => {
-					winston.info('Response Received');
+					//winston.info('Response Received');
 					res.status(200).send(forwardedRes.data);
 				})
 				.catch(err => {
-					winston.error(err);
+					//winston.error(err);
 					res.status(500).send(err);
 				});
 		} else {
-			winston.error('access denied');
+			//winston.error('access denied');
 			res.status(401).send('access denied').end();
 		}
 	}
