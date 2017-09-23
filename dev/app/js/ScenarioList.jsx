@@ -5,12 +5,15 @@ import Scenario from './Scenario.jsx';
 
 import { PageHeader, Accordion, Col, Alert } from 'react-bootstrap';
 
+const REFRESH_TEMPO = 3000;
+
 export default class ScenarioList extends React.Component {
 
 	constructor(props) {
 		super(props);
 		this.state = {
-			scenarii : []
+			scenarii : [],
+			intervalId: null
 		};
 		this.handleChange = this.handleChange.bind(this);
 	}
@@ -29,16 +32,18 @@ export default class ScenarioList extends React.Component {
 				.then((fetchedScenario) => {
 					//console.log('fetched');
 					//console.log(JSON.stringify(fetchedScenario));
-					this.setState( () => {
+					this.setState( (prevState) => {
 						return {
-							scenarii: fetchedScenario
+							scenarii: fetchedScenario,
+							intervalId: prevState.intervalId
 						};
 					});
 				})
 				.catch((err) => {
-					this.setState( () => {
+					this.setState( (prevState) => {
 						return {
-							scenarii: []
+							scenarii: [],
+							intervalId: prevState.intervalId
 						};
 					});
 				});
@@ -47,29 +52,40 @@ export default class ScenarioList extends React.Component {
 	}
 
 	componentDidMount() {
-		setInterval(
+		let interval = setInterval(
 			() => {
 				if (isLoggedIn()) {
 					//console.log('Scenario and logged');
 					getScenario()
 						.then(fetchedScenarii => {
 							//console.log('fetched');
-							this.setState( () => {
+							this.setState( (prevState) => {
 								return {
-									scenarii: fetchedScenarii
+									scenarii: fetchedScenarii,
+									intervalId: prevState.intervalId
 								};
 							});
 						})
 						.catch((err) => {
 							//console.log(`error:${err}`);
-							this.setState( () => {
+							this.setState( (prevState) => {
 								return {
-									scenarii: []
+									scenarii: [],
+									intervalId: prevState.intervalId
 								};
 							});
 						});
 				}
-			}, 3000);
+			}, REFRESH_TEMPO);
+
+		this.state = {
+			scenarii : [],
+			intervalId: interval
+		};
+	}
+
+	componentWillUnmount () {
+		clearInterval(this.state.intervalId);
 	}
 
 	render() {

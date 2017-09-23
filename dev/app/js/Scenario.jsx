@@ -3,8 +3,9 @@ import {getRunForScenario, isScenarioScheduled, scheduleScenario, playNowScenari
 
 import { Panel, Col, Alert, Button, FormGroup, ControlLabel, FormControl, Modal, Checkbox } from 'react-bootstrap';
 
-export default class Scenario extends React.Component {
+const REFRESH_TEMPO = 3000;
 
+export default class Scenario extends React.Component {
 	constructor(props) {
 		super(props);
 		let scenario = this.props.scenario;
@@ -16,7 +17,8 @@ export default class Scenario extends React.Component {
 			isScheduled : false,
 			runs: [],
 			time : new Date(),
-			showPlayNowModal: false
+			showPlayNowModal: false,
+			intervalId: null
 		};
 		//console.log(this.props.indice);
 		this.handleChangeWait = this.handleChangeWait.bind(this);
@@ -27,7 +29,7 @@ export default class Scenario extends React.Component {
 	}
 
 	componentDidMount() {
-		setInterval(
+		let interval = setInterval(
 			() => {
 				//console.log('interval');
 				var runPromise = getRunForScenario(this.state.scenario._id);
@@ -42,7 +44,8 @@ export default class Scenario extends React.Component {
 								runs: fetchedRuns,
 								isScheduled: fetchedIsScheduled,
 								time: prevState.time,
-								showPlayNowModal: prevState.showPlayNowModal
+								showPlayNowModal: prevState.showPlayNowModal,
+								intervalId: prevState.intervalId
 							};
 						});
 					})
@@ -54,13 +57,31 @@ export default class Scenario extends React.Component {
 								runs: [],
 								isScheduled: null,
 								time : prevState.time,
-								showPlayNowModal: prevState.showPlayNowModal
+								showPlayNowModal: prevState.showPlayNowModal,
+								intervalId: prevState.intervalId
 							};
 						});
 					});
-			}, 3000);
+			}, REFRESH_TEMPO);
 		
+		this.setState( (prevState) => {
+			return {
+				scenario: prevState.scenario,
+				runs: prevState.runs,
+				isScheduled: prevState.isScheduled,
+				time: prevState.time,
+				showPlayNowModal: prevState.showPlayNowModal,
+				intervalId: interval
+			};
+		});
 	}
+
+
+
+	componentWillUnmount () {
+		clearInterval(this.state.intervalId);
+	}
+
 
 	handleChangeWait(event) {
 		event.preventDefault();
@@ -78,7 +99,8 @@ export default class Scenario extends React.Component {
 						runs: prevState.runs,
 						isScheduled: prevState.isScheduled,
 						time : prevState.time,
-						showPlayNowModal: prevState.showPlayNowModal
+						showPlayNowModal: prevState.showPlayNowModal,
+						intervalId: prevState.intervalId
 					};
 				});
 			})
@@ -97,7 +119,8 @@ export default class Scenario extends React.Component {
 						runs: prevState.runs,
 						isScheduled: !prevState.isScheduled,
 						time : prevState.time,
-						showPlayNowModal: prevState.showPlayNowModal
+						showPlayNowModal: prevState.showPlayNowModal,
+						intervalId: prevState.intervalId
 					};
 				});
 			})
@@ -117,7 +140,8 @@ export default class Scenario extends React.Component {
 						runs: prevState.runs,
 						isScheduled: prevState.isScheduled,
 						time : prevState.time,
-						showPlayNowModal: true
+						showPlayNowModal: true,
+						intervalId: prevState.intervalId
 					};
 				});
 			})
@@ -145,7 +169,8 @@ export default class Scenario extends React.Component {
 				runs: prevState.runs,
 				isScheduled: prevState.isScheduled,
 				time: Date.now(),
-				showPlayNowModal: false
+				showPlayNowModal: false,
+				intervalId: prevState.intervalId
 			};
 		});
 	}
