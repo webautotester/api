@@ -1,4 +1,5 @@
-var argv = require('yargs').usage('$0 server.js --mongo=[string] --scheduler=[string]').argv;
+var argv = require('yargs').usage('$0 server.js --port=[int] --mongo=[string] --scheduler=[string]').argv;
+const PORT = argv.port || 80;
 var serverNames = {
 	mongoServerName : argv.mongo || 'localhost',
 	schedulerServerName : argv.scheduler || 'localhost'
@@ -55,8 +56,6 @@ function initRoutes() {
 				res.sendFile(path.join(applicationRoot, './app/index.html'));
 			});
 
-			const PORT = 80;
-
 			app.listen(PORT, function() {
 				winston.info(`WAT Front is listening on port ${PORT}`);
 			});
@@ -64,8 +63,7 @@ function initRoutes() {
 		.catch((err) => {
 			winston.info(err);
 			setTimeout(() => {
-				initRoutes(); 
+				initRoutes();
 			}, 3000);
 		});
 }
-
