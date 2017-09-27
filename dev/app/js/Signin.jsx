@@ -1,5 +1,5 @@
 import React from 'react';
-import {isLoggedIn, signin} from './AuthService.js';
+import {isLoggedIn, signin} from './authenticationService.js';
 
 import { FormGroup, FormControl, ControlLabel, Button, Alert } from 'react-bootstrap';
 

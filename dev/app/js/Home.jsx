@@ -1,5 +1,5 @@
 import React from 'react';
-import {isLoggedIn} from './AuthService.js';
+import {isLoggedIn} from './authenticationService.js';
 import { PageHeader, Alert, Row, Col, Image } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 

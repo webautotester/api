@@ -1,5 +1,5 @@
 import React from 'react';
-import {getRunForScenario, isScenarioScheduled, scheduleScenario, playNowScenario, pushScenario, removeScenario} from './ScenarioHelper.js';
+import {getRunForScenario, isScenarioScheduled, scheduleScenario, playNowScenario, pushScenario, removeScenario} from './scenarioService.js';
 import Loader from 'react-loader';
 import { Panel, Col, Alert, Button, FormGroup, ControlLabel, FormControl, Modal, Checkbox } from 'react-bootstrap';
 

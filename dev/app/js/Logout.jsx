@@ -1,5 +1,5 @@
 import React from 'react';
-import {isLoggedIn, logout} from './AuthService.js';
+import {isLoggedIn, logout} from './authenticationService.js';
 import { Redirect } from 'react-router-dom';
 
 import { Button, Alert} from 'react-bootstrap';

@@ -4,7 +4,7 @@ const path = require('path');
 var config = {
 	context: path.resolve(__dirname,'..'),
 	entry: {
-		'app/js/app': './dev/app/js/index.jsx'
+		'app/js/app': './dev/app/js/App.jsx'
 	},
 	output: {
 		path: path.resolve(__dirname, '../ops'),

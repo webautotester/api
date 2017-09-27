@@ -1,6 +1,6 @@
 import React from 'react';
-import {isLoggedIn} from './AuthService.js';
-import {getScenario} from './ScenarioHelper.js';
+import {isLoggedIn} from './authenticationService.js';
+import {getScenario} from './scenarioService.js';
 import Scenario from './Scenario.jsx';
 import Loader from 'react-loader';
 import { PageHeader, Accordion, Col, Alert, Row } from 'react-bootstrap';
