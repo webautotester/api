@@ -6,7 +6,6 @@ var serverNames = {
 };
 
 var winston = require('winston');
-
 var express = require('express');
 var helmet = require('helmet');
 var path = require('path');
@@ -52,7 +51,6 @@ function initRoutes() {
 			require('./routes/schedule.js').init(serverNames,app,db);
 
 			app.get('*', (req,res) => {
-				winston.info('get *');
 				res.sendFile(path.join(applicationRoot, './app/index.html'));
 			});
 

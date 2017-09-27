@@ -2,20 +2,23 @@ const CopyPlugin = require('copy-webpack-plugin');
 const path = require('path');
 
 var config = {
+	context: path.resolve(__dirname,'..'),
 	entry: {
-		//context: path.resolve(__dirname, 'dev'),
-		'app/js/app': './dev/app/js/index.jsx',
+		'app/js/app': './dev/app/js/index.jsx'
 	},
 	output: {
-		path: path.resolve(__dirname, 'ops'),
+		path: path.resolve(__dirname, '../ops'),
 		filename: '[name].bundle.js'
 	},
+	resolve: {
+		extensions:['.js','.jsx']
+	},
 	module: {
-		loaders: [{
+		rules: [{
 			test: /\.jsx?$/,
-			include: path.resolve(__dirname,'dev/app'),
 			exclude: /node_modules/,
-			loader: 'babel-loader',
+			include: path.resolve(__dirname,'../dev/app'),
+			use: 'babel-loader',
 		}]
 	},
 	plugins: [

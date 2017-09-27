@@ -222,7 +222,7 @@ export default class Scenario extends React.Component {
 					<Button onClick={this.onClickPlayNow}>Play Now</Button>
 				</Col>
 				<Col xs={12} md={12} >
-					<Checkbox checked={this.state.isScheduled} onClick={this.onClickSchedule}> Scheduling (once per day, each morning)
+					<Checkbox checked={this.state.isScheduled} onChange={this.onClickSchedule}> Scheduling (once per day, each morning)
 					</Checkbox>
 				</Col>
 				<Col xs={12} md={8} >

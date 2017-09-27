@@ -1,9 +1,9 @@
 import React from 'react';
 import {isLoggedIn} from './AuthService.js';
-import {getScenario, pushScenario} from './ScenarioHelper.js';
+import {getScenario} from './ScenarioHelper.js';
 import Scenario from './Scenario.jsx';
-
-import { PageHeader, Accordion, Col, Alert } from 'react-bootstrap';
+import Loader from 'react-loader';
+import { PageHeader, Accordion, Col, Alert, Row } from 'react-bootstrap';
 
 const REFRESH_TEMPO = 3000;
 
@@ -13,42 +13,9 @@ export default class ScenarioList extends React.Component {
 		super(props);
 		this.state = {
 			scenarii : [],
+			loaded : false,
 			intervalId: null
 		};
-		this.handleChange = this.handleChange.bind(this);
-	}
-
-	handleChange(event) {
-		//console.log('File did change');
-		event.preventDefault();
-		let reader = new FileReader();
-		let file = event.target.files[0];
-		reader.onloadend = () => {
-			pushScenario(JSON.parse(reader.result))
-				.then(() => {
-					//console.log('will get after post');
-					return getScenario();
-				})
-				.then((fetchedScenario) => {
-					//console.log('fetched');
-					//console.log(JSON.stringify(fetchedScenario));
-					this.setState( (prevState) => {
-						return {
-							scenarii: fetchedScenario,
-							intervalId: prevState.intervalId
-						};
-					});
-				})
-				.catch((err) => {
-					this.setState( (prevState) => {
-						return {
-							scenarii: [],
-							intervalId: prevState.intervalId
-						};
-					});
-				});
-		};
-		reader.readAsText(file);
 	}
 
 	componentDidMount() {
@@ -56,12 +23,20 @@ export default class ScenarioList extends React.Component {
 			() => {
 				if (isLoggedIn()) {
 					//console.log('Scenario and logged');
+					this.setState( (prevState) => {
+						return {
+							scenarii: prevState.scenarii,
+							loaded: false,
+							intervalId: prevState.intervalId
+						};
+					});
 					getScenario()
 						.then(fetchedScenarii => {
 							//console.log('fetched');
 							this.setState( (prevState) => {
 								return {
 									scenarii: fetchedScenarii,
+									loaded: true,
 									intervalId: prevState.intervalId
 								};
 							});
@@ -71,6 +46,7 @@ export default class ScenarioList extends React.Component {
 							this.setState( (prevState) => {
 								return {
 									scenarii: [],
+									loaded: true,
 									intervalId: prevState.intervalId
 								};
 							});
@@ -91,21 +67,19 @@ export default class ScenarioList extends React.Component {
 	render() {
 		//console.log('render');
 		if (isLoggedIn()) {
-			//console.log('logged in');
-			//console.log(JSON.stringify(this.state.scenarii));
 			var scenarii = this.state.scenarii.map( (scenario,i) => <Scenario indice={i+1} scenario={scenario} key={scenario._id} eventKey={i}  />);
-			// var scenarii = this.state.scenarii.map( (scenario,i) => 
-			// 	<Panel header={scenario._id} eventKey={i}>
-			// 		<Scenario indice={i} scenario={scenario} />
-			// 	</Panel>
-			// );
-      
-			console.log(scenarii);
 			return (
-				<Col xs={12} md={12} >
-					<PageHeader>Your scenario</PageHeader>
-					<Accordion>{scenarii}</Accordion>
-				</Col>
+				<Row>
+					<Col xs={12} md={12} >
+						<PageHeader>Your scenario</PageHeader>
+						<Accordion>{scenarii}</Accordion>
+					</Col>
+					<Loader loaded={this.state.loaded}>
+						<Alert bsStyle="success">
+							All scenario have been loaded !
+						</Alert>	
+					</Loader>
+				</Row>
 			);
 		} else {
 			return (<Alert bsStyle="warning">
