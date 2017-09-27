@@ -27,9 +27,13 @@ COPY dev/app/img/*.png dev/app/img/
 RUN mkdir dev/routes
 COPY dev/routes/*.js dev/routes/
 
-COPY webpack.config.js .
+RUN mkdir webpack
+COPY webpack/base.config.js webpack/
+COPY webpack/prod.config.js webpack/
+
 COPY .babelrc .
 COPY package.json .
+
 
 RUN npm install
 RUN npm run prod
