@@ -1,9 +1,9 @@
 import React from 'react';
 import {getRunForScenario, isScenarioScheduled, scheduleScenario, playNowScenario, pushScenario, removeScenario} from './ScenarioHelper.js';
-
+import Loader from 'react-loader';
 import { Panel, Col, Alert, Button, FormGroup, ControlLabel, FormControl, Modal, Checkbox } from 'react-bootstrap';
 
-const REFRESH_TEMPO = 3000;
+const REFRESH_TEMPO = 5000;
 
 export default class Scenario extends React.Component {
 	constructor(props) {
@@ -18,7 +18,8 @@ export default class Scenario extends React.Component {
 			runs: [],
 			time : new Date(),
 			showPlayNowModal: false,
-			intervalId: null
+			intervalId: null,
+			runLoaded: false
 		};
 		//console.log(this.props.indice);
 		this.handleChangeWait = this.handleChangeWait.bind(this);
@@ -31,6 +32,17 @@ export default class Scenario extends React.Component {
 	componentDidMount() {
 		let interval = setInterval(
 			() => {
+				this.setState( (prevState) => {
+					return {
+						scenario: prevState.scenario,
+						runs: prevState.runs,
+						isScheduled: prevState.isScheduled,
+						time: prevState.time,
+						showPlayNowModal: prevState.showPlayNowModal,
+						intervalId: prevState.intervalId,
+						runLoaded: false
+					};
+				});
 				//console.log('interval');
 				var runPromise = getRunForScenario(this.state.scenario._id);
 				var schedulePromise = isScenarioScheduled(this.state.scenario._id);
@@ -45,7 +57,8 @@ export default class Scenario extends React.Component {
 								isScheduled: fetchedIsScheduled,
 								time: prevState.time,
 								showPlayNowModal: prevState.showPlayNowModal,
-								intervalId: prevState.intervalId
+								intervalId: prevState.intervalId,
+								runLoaded: true
 							};
 						});
 					})
@@ -58,7 +71,8 @@ export default class Scenario extends React.Component {
 								isScheduled: null,
 								time : prevState.time,
 								showPlayNowModal: prevState.showPlayNowModal,
-								intervalId: prevState.intervalId
+								intervalId: prevState.intervalId,
+								runLoaded: true
 							};
 						});
 					});
@@ -71,7 +85,8 @@ export default class Scenario extends React.Component {
 				isScheduled: prevState.isScheduled,
 				time: prevState.time,
 				showPlayNowModal: prevState.showPlayNowModal,
-				intervalId: interval
+				intervalId: interval,
+				runLoaded: false
 			};
 		});
 	}
@@ -100,7 +115,8 @@ export default class Scenario extends React.Component {
 						isScheduled: prevState.isScheduled,
 						time : prevState.time,
 						showPlayNowModal: prevState.showPlayNowModal,
-						intervalId: prevState.intervalId
+						intervalId: prevState.intervalId,
+						runLoaded: prevState.runLoaded
 					};
 				});
 			})
@@ -120,7 +136,8 @@ export default class Scenario extends React.Component {
 						isScheduled: !prevState.isScheduled,
 						time : prevState.time,
 						showPlayNowModal: prevState.showPlayNowModal,
-						intervalId: prevState.intervalId
+						intervalId: prevState.intervalId,
+						runLoaded: prevState.runLoaded
 					};
 				});
 			})
@@ -141,7 +158,8 @@ export default class Scenario extends React.Component {
 						isScheduled: prevState.isScheduled,
 						time : prevState.time,
 						showPlayNowModal: true,
-						intervalId: prevState.intervalId
+						intervalId: prevState.intervalId,
+						runLoaded: prevState.runLoaded
 					};
 				});
 			})
@@ -170,7 +188,8 @@ export default class Scenario extends React.Component {
 				isScheduled: prevState.isScheduled,
 				time: Date.now(),
 				showPlayNowModal: false,
-				intervalId: prevState.intervalId
+				intervalId: prevState.intervalId,
+				runLoaded: prevState.runLoaded
 			};
 		});
 	}
@@ -228,6 +247,11 @@ export default class Scenario extends React.Component {
 				<Col xs={12} md={8} >
 					<h2>Last 10 Runs</h2>
 					<ul>{runs}</ul>
+					<Loader loaded={this.state.runLoaded}>
+						<Alert bsStyle="success">
+							All runs have been loaded !
+						</Alert>
+					</Loader>
 				</Col>
 
 				<Modal show={this.state.showPlayNowModal} onHide={this.closePlayNowModal}>
