@@ -4,8 +4,6 @@ import axios from 'axios';
 const BASE_URL = location.protocol + '//' + location.hostname + (location.port ? ':'+location.port: '');
 //console.log(`BASE_URL : ${BASE_URL}`);
 
-var logged = false;
-
 export function login(credentials) {
 	return new Promise( (resolve, reject) => {
 		const url = `${BASE_URL}/api/login`;
@@ -16,7 +14,7 @@ export function login(credentials) {
 					resolve(false);
 				} else {
 					//console.log('correct');
-					logged = true;
+					sessionStorage.setItem('logged',true);
 					resolve(true);
 				}
 			})
@@ -32,7 +30,7 @@ export function logout() {
 		const url = `${BASE_URL}/api/logout`;
 		axios.get(url)
 			.then(response => {
-				logged = false;
+				sessionStorage.removeItem('logged');
 				resolve(response);
 			})
 			.catch(err => {
@@ -42,7 +40,7 @@ export function logout() {
 }
 
 export function isLoggedIn() {
-	return logged;
+	return sessionStorage.getItem('logged') ? sessionStorage.getItem('logged') : false;
 }
 
 export function signin(credentials) {
