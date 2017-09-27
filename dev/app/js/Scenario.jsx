@@ -12,6 +12,9 @@ export default class Scenario extends React.Component {
 		if (! scenario.wait) {
 			scenario.wait = 0;
 		}
+		if (! scenario.cssselector) {
+			scenario.cssselector = 'watId';
+		}
 		this.state = {
 			scenario : scenario,
 			isScheduled : false,
@@ -23,6 +26,7 @@ export default class Scenario extends React.Component {
 		};
 		//console.log(this.props.indice);
 		this.handleChangeWait = this.handleChangeWait.bind(this);
+		this.handleChangeCSSSelector = this.handleChangeCSSSelector.bind(this);
 		this.onClickSchedule = this.onClickSchedule.bind(this);
 		this.onClickPlayNow = this.onClickPlayNow.bind(this);
 		this.onClickRemoveScenario = this.onClickRemoveScenario.bind(this);
@@ -105,6 +109,33 @@ export default class Scenario extends React.Component {
 		//console.log(wait);
 		var newScenario = this.state.scenario;
 		newScenario.wait = wait;
+		pushScenario(newScenario)
+			.then( (response) => {
+				//console.log(`pushScenario: ${response}`);
+				this.setState( (prevState) => {
+					return {
+						scenario: newScenario,
+						runs: prevState.runs,
+						isScheduled: prevState.isScheduled,
+						time : prevState.time,
+						showPlayNowModal: prevState.showPlayNowModal,
+						intervalId: prevState.intervalId,
+						runLoaded: prevState.runLoaded
+					};
+				});
+			})
+			.catch( (err) => {
+				//console.log(`pushScenario error: ${err}`);
+			});
+	}
+
+	handleChangeCSSSelector(event) {
+		//event.preventDefault();
+		const cssselectorId = `cssselector${this.state.scenario._id}`;
+		var cssselector = document.getElementById(cssselectorId).value;
+		console.log(cssselector);
+		var newScenario = this.state.scenario;
+		newScenario.cssselector = cssselector;
 		pushScenario(newScenario)
 			.then( (response) => {
 				//console.log(`pushScenario: ${response}`);
@@ -214,6 +245,7 @@ export default class Scenario extends React.Component {
 
 		const head = `${this.props.indice} - Scenario (${this.state.scenario._id}) - URL : ${this.state.scenario.actions[0].url}`;
 		const waitControlId = `wait${this.state.scenario._id}`;
+		const cssselectorId = `cssselector${this.state.scenario._id}`;
 		
 		return (
 			<Panel header={head} {...divProps} >
@@ -229,11 +261,23 @@ export default class Scenario extends React.Component {
 					<ul>{actions}</ul>
 				</Col>
 				<Col xs={12} md={8} >
-					<h2>Configuration</h2>
+					<h2>Run Configuration</h2>
 					<form>
 						<FormGroup >
 							<ControlLabel>Wait time in ms (after each action)</ControlLabel>
 							<FormControl id={waitControlId} type="number" defaultValue={this.state.scenario.wait} onChange={this.handleChangeWait}/>
+						</FormGroup>
+						<FormGroup >
+							<ControlLabel>CSS Selector Used To Identify Element</ControlLabel>
+							<select id={cssselectorId} 
+								componentClass="select" 
+								placeholder="select" 
+								defaultValue={this.state.scenario.cssselector} 
+								onChange={this.handleChangeCSSSelector}>
+								<option value="watId">WAT With Id</option>
+								<option value="watPath">WAT With Path</option>
+								<option value="optimal">Optimal Select</option>
+							</select>
 						</FormGroup>
 					</form>
 				</Col>
