@@ -5,7 +5,7 @@ import Scenario from './Scenario.jsx';
 import Loader from 'react-loader';
 import { PageHeader, Accordion, Col, Alert, Row } from 'react-bootstrap';
 
-const REFRESH_TEMPO = 3000;
+const REFRESH_TEMPO = 5000;
 
 export default class ScenarioList extends React.Component {
 
@@ -69,17 +69,23 @@ export default class ScenarioList extends React.Component {
 		if (isLoggedIn()) {
 			var scenarii = this.state.scenarii.map( (scenario,i) => <Scenario indice={i+1} scenario={scenario} key={scenario._id} eventKey={i}  />);
 			return (
-				<Row>
-					<Col xs={12} md={12} >
-						<PageHeader>Your scenario</PageHeader>
-						<Accordion>{scenarii}</Accordion>
-					</Col>
-					<Loader loaded={this.state.loaded}>
-						<Alert bsStyle="success">
+				<div>
+					<Row>
+						<Col xs={12} md={12} >
+							<PageHeader>Your scenario</PageHeader>
+							<Accordion>{scenarii}</Accordion>
+						</Col>
+					</Row>
+					<Row>
+						<Col xs={12} md={12} >
+							<Loader loaded={this.state.loaded}>
+								<Alert bsStyle="success">
 							All scenario have been loaded !
-						</Alert>	
-					</Loader>
-				</Row>
+								</Alert>	
+							</Loader>
+						</Col>
+					</Row>
+				</div>
 			);
 		} else {
 			return (<Alert bsStyle="warning">
