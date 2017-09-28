@@ -5,7 +5,7 @@ import Scenario from './Scenario.jsx';
 import Loader from 'react-loader';
 import { PageHeader, Accordion, Col, Alert, Row } from 'react-bootstrap';
 
-const REFRESH_TEMPO = 5000;
+var REFRESH_TEMPO = 4000;
 
 export default class ScenarioList extends React.Component {
 
@@ -73,7 +73,7 @@ export default class ScenarioList extends React.Component {
 					<Row>
 						<Col xs={12} md={12} >
 							<PageHeader>Your scenario</PageHeader>
-							<Accordion>{scenarii}</Accordion>
+							
 						</Col>
 					</Row>
 					<Row>
@@ -83,6 +83,11 @@ export default class ScenarioList extends React.Component {
 							All scenario have been loaded !
 								</Alert>	
 							</Loader>
+						</Col>
+					</Row>
+					<Row>
+						<Col xs={12} md={12}>
+							<Accordion>{scenarii}</Accordion>
 						</Col>
 					</Row>
 				</div>

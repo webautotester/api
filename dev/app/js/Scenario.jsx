@@ -3,7 +3,7 @@ import {getRunForScenario, isScenarioScheduled, scheduleScenario, playNowScenari
 import Loader from 'react-loader';
 import { Panel, Col, Alert, Button, FormGroup, ControlLabel, FormControl, Modal, Checkbox } from 'react-bootstrap';
 
-const REFRESH_TEMPO = 5000;
+const REFRESH_TEMPO = 15000;
 
 export default class Scenario extends React.Component {
 	constructor(props) {
@@ -14,6 +14,9 @@ export default class Scenario extends React.Component {
 		}
 		if (! scenario.cssselector) {
 			scenario.cssselector = 'watId';
+		}
+		if (! scenario.name) {
+			scenario.name = 'MyScenario';
 		}
 		this.state = {
 			scenario : scenario,
@@ -131,11 +134,38 @@ export default class Scenario extends React.Component {
 
 	handleChangeCSSSelector(event) {
 		//event.preventDefault();
-		const cssselectorId = `cssselector${this.state.scenario._id}`;
-		var cssselector = document.getElementById(cssselectorId).value;
+		const cssSelectorControlId = `cssselector${this.state.scenario._id}`;
+		var cssselector = document.getElementById(cssSelectorControlId).value;
 		console.log(cssselector);
 		var newScenario = this.state.scenario;
 		newScenario.cssselector = cssselector;
+		pushScenario(newScenario)
+			.then( (response) => {
+				//console.log(`pushScenario: ${response}`);
+				this.setState( (prevState) => {
+					return {
+						scenario: newScenario,
+						runs: prevState.runs,
+						isScheduled: prevState.isScheduled,
+						time : prevState.time,
+						showPlayNowModal: prevState.showPlayNowModal,
+						intervalId: prevState.intervalId,
+						runLoaded: prevState.runLoaded
+					};
+				});
+			})
+			.catch( (err) => {
+				//console.log(`pushScenario error: ${err}`);
+			});
+	}
+
+
+	handleChangeName(event) {
+		event.preventDefault();
+		const nameControlId = `name${this.state.scenario._id}`;
+		var name = document.getElementById(nameControlId).value;
+		var newScenario = this.state.scenario;
+		newScenario.name = name;
 		pushScenario(newScenario)
 			.then( (response) => {
 				//console.log(`pushScenario: ${response}`);
@@ -245,10 +275,19 @@ export default class Scenario extends React.Component {
 
 		const head = `${this.props.indice} - Scenario (${this.state.scenario._id}) - URL : ${this.state.scenario.actions[0].url}`;
 		const waitControlId = `wait${this.state.scenario._id}`;
-		const cssselectorId = `cssselector${this.state.scenario._id}`;
+		const cssSelectorControlId = `cssselector${this.state.scenario._id}`;
+		const nameControlId = `name${this.state.scenario._id}`;
 		
 		return (
 			<Panel header={head} {...divProps} >
+				<Col xs={12} md={8}>
+					<form>
+						<FormGroup >
+							<ControlLabel>Name </ControlLabel>
+							<FormControl id={nameControlId} type="text" defaultValue={this.state.scenario.name} onChange={this.handleChangeName}/>
+						</FormGroup>
+					</form>
+				</Col>
 				<Col xs={12} md={8} >
 					<Alert bsStyle="info">This Scenario is <b>{isScheduled}</b></Alert>
 				</Col>
@@ -261,7 +300,7 @@ export default class Scenario extends React.Component {
 					<ul>{actions}</ul>
 				</Col>
 				<Col xs={12} md={8} >
-					<h2>Run Configuration</h2>
+					<h2>Run Configuration (Choose The One That Fits Your Scenario)</h2>
 					<form>
 						<FormGroup >
 							<ControlLabel>Wait time in ms (after each action)</ControlLabel>
@@ -269,7 +308,7 @@ export default class Scenario extends React.Component {
 						</FormGroup>
 						<FormGroup >
 							<ControlLabel>CSS Selector Used To Identify Element</ControlLabel>
-							<select id={cssselectorId} 
+							<select id={cssSelectorControlId} 
 								componentClass="select" 
 								placeholder="select" 
 								defaultValue={this.state.scenario.cssselector} 
@@ -290,12 +329,12 @@ export default class Scenario extends React.Component {
 				</Col>
 				<Col xs={12} md={8} >
 					<h2>Last 10 Runs</h2>
-					<ul>{runs}</ul>
 					<Loader loaded={this.state.runLoaded}>
 						<Alert bsStyle="success">
 							All runs have been loaded !
 						</Alert>
 					</Loader>
+					<ul>{runs}</ul>
 				</Col>
 
 				<Modal show={this.state.showPlayNowModal} onHide={this.closePlayNowModal}>

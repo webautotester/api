@@ -15,14 +15,14 @@ export default class Home extends React.Component {
 		}
 		return (
 			<div>
-			<Row>
-				<Jumbotron><h1>Web Automatic Tester</h1><Label bsStyle="danger">Beta test edition</Label>
-				</Jumbotron>
-			</Row>
-			<Row>
+				<Row>
+					<Jumbotron><h1>Web Automatic Tester</h1><Label bsStyle="danger">Beta test edition</Label>
+					</Jumbotron>
+				</Row>
+				<Row>
 					<Col sm={12} md={4}>
 						<div className="centered"><Image src="../img/record.png" height="125" width="125" rounded /></div>
-						<div>Record your end to end test scenario using our Chrome Plugin.</div>
+						<div>Record your end to end test scenario using our <a href="https://chrome.google.com/webstore/detail/wat-chrome-plugin/fopllklfdgccljiagdpeocpdnhlmlakc">Chrome Plugin.</a></div>
 					</Col>
 					<Col sm={12} md={4}>
 						<div className="centered"><Image src="../img/replay.png" height="125" width="125" rounded /></div>
@@ -34,25 +34,25 @@ export default class Home extends React.Component {
 					</Col>
 				</Row>
 				<Row>
-				<Col>
-				<h2>Demo</h2>
-				<div>
-					<video src="../img/demo.mp4" autoPlay controls loop width="800"/>
-				</div>
-				</Col></Row>
+					<Col>
+						<h2>Demo</h2>
+						<div>
+							<video src="../img/demo.mp4" autoPlay controls loop width="800"/>
+						</div>
+					</Col></Row>
 				<Row>
-				<Col sm={12} md={6}>
-				<h2>How to use Web Automatic Tester (WAT)?</h2>
-				<p>First you need to <LinkContainer to="/signin"><a>Sign in </a></LinkContainer> and then <LinkContainer to="/login"><a>Log in </a></LinkContainer>.</p>
-				<p>Second you need to download our <a href="https://chrome.google.com/webstore/detail/wat-chrome-plugin/fopllklfdgccljiagdpeocpdnhlmlakc">Chrome Plugin</a> and use it to record your end to end tests.</p>
-				<p>Third you can play with your <LinkContainer to="/scenario"><a> recorded end to end tests!</a></LinkContainer></p>
-				</Col><Col sm={12} md={6}>
-				<h2>Who is behind WAT ?</h2>
-				<p><a href="http://www.promyze.com">ProMyze</a> is developping WAT for testing Themis, and is proud to provide it.</p>
-				<p>WAT is open source. If you like it and want more services, please star the <a href="https://github.com/webautotester/docker_compose">WAT GitHub projet</a> or add an issue to the list.</p>
-				{uRLoggedInMsg}
-				</Col>
-			</Row>
+					<Col sm={12} md={6}>
+						<h2>How to use Web Automatic Tester (WAT)?</h2>
+						<p>First you need to <LinkContainer to="/signin"><a>Sign in </a></LinkContainer> and then <LinkContainer to="/login"><a>Log in </a></LinkContainer>.</p>
+						<p>Second you need to download our <a href="https://chrome.google.com/webstore/detail/wat-chrome-plugin/fopllklfdgccljiagdpeocpdnhlmlakc">Chrome Plugin</a> and use it to record your end to end tests.</p>
+						<p>Third you can play with your <LinkContainer to="/scenario"><a> recorded end to end tests!</a></LinkContainer></p>
+					</Col><Col sm={12} md={6}>
+						<h2>Who is behind WAT ?</h2>
+						<p><a href="http://www.promyze.com">ProMyze</a> is developping WAT for testing Themis, and is proud to provide it.</p>
+						<p>WAT is open source. If you like it and want more services, please star the <a href="https://github.com/webautotester/docker_compose">WAT GitHub projet</a> or add an issue to the list.</p>
+						{uRLoggedInMsg}
+					</Col>
+				</Row>
 			</div>
 		);
 	}
