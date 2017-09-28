@@ -16,28 +16,30 @@ export default class Home extends React.Component {
 		return (
 			<div>
 				<Row>
-					<Jumbotron><h1>Web Automatic Tester</h1><Label bsStyle="danger">Beta test edition</Label>
+					<Jumbotron><h1>WAT</h1>
+						<h2 className="page-subtitle">The Web Automatic Tester</h2>
+						<Label className="label-danger-orange">Beta test edition</Label>
 					</Jumbotron>
 				</Row>
 				<Row>
 					<Col sm={12} md={4}>
 						<div className="centered"><Image src="../img/record.png" height="125" width="125" rounded /></div>
-						<div>Record your end to end test scenario using our <a href="https://chrome.google.com/webstore/detail/wat-chrome-plugin/fopllklfdgccljiagdpeocpdnhlmlakc">Chrome Plugin.</a></div>
+						<div className="image-description-element">Record your end to end test scenario using our <a href="https://chrome.google.com/webstore/detail/wat-chrome-plugin/fopllklfdgccljiagdpeocpdnhlmlakc">Chrome Plugin.</a></div>
 					</Col>
 					<Col sm={12} md={4}>
 						<div className="centered"><Image src="../img/replay.png" height="125" width="125" rounded /></div>
-						<div>Replay your end to end test scenario on demand or scheduled every day.</div>
+						<div className="image-description-element">Replay your end to end test scenario on demand or scheduled every day.</div>
 					</Col>
 					<Col sm={12} md={4}>
 						<div className="centered"><Image src="../img/check.png" height="125" width="125" rounded /></div>
-						<div>Get notified if your end to end test scenario is a success or a failure.</div>
+						<div className="image-description-element">Get notified if your end to end test scenario is a success or a failure.</div>
 					</Col>
 				</Row>
 				<Row>
 					<Col>
-						<h2>Demo</h2>
+						<h2 className="category-title">Demo</h2>
 						<div>
-							<video src="../img/demo.mp4" autoPlay controls loop width="800"/>
+							<video className="centered-video" src="../img/demo.mp4" autoPlay controls loop width="800"/>
 						</div>
 					</Col></Row>
 				<Row>

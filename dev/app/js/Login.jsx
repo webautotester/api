@@ -86,7 +86,7 @@ export default class Login extends React.Component {
 					</Alert>;
 				}
 				return (
-					<form onSubmit={this.handleSubmit}>
+					<form onSubmit={this.handleSubmit} className="centered-form">
 						<FormGroup>
 							<ControlLabel>Username</ControlLabel>
 							<FormControl id="username" type="text" value={this.state.username} onChange={this.handleChange}/>
