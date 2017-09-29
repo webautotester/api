@@ -3,7 +3,7 @@ import {isLoggedIn} from './authenticationService.js';
 import {getScenario} from './scenarioService.js';
 import Scenario from './Scenario.jsx';
 import Loader from 'react-loader';
-import { PageHeader, Accordion, Col, Alert, Row } from 'react-bootstrap';
+import {PageHeader, Accordion, Col, Alert, Row} from 'react-bootstrap';
 
 var REFRESH_TEMPO = 4000;
 
@@ -11,92 +11,86 @@ export default class ScenarioList extends React.Component {
 
 	constructor(props) {
 		super(props);
+
 		this.state = {
-			scenarii : [],
-			loaded : false,
-			intervalId: null
+			scenarii: [],
+			loaded: false,
+			intervalId: null,
+			firstLoad: true
 		};
 	}
 
-	componentDidMount() {
-		let interval = setInterval(
-			() => {
-				if (isLoggedIn()) {
-					//console.log('Scenario and logged');
-					this.setState( (prevState) => {
-						return {
-							scenarii: prevState.scenarii,
-							loaded: false,
-							intervalId: prevState.intervalId
-						};
-					});
-					getScenario()
-						.then(fetchedScenarii => {
-							//console.log('fetched');
-							this.setState( (prevState) => {
-								return {
-									scenarii: fetchedScenarii,
-									loaded: true,
-									intervalId: prevState.intervalId
-								};
-							});
-						})
-						.catch((err) => {
-							//console.log(`error:${err}`);
-							this.setState( (prevState) => {
-								return {
-									scenarii: [],
-									loaded: true,
-									intervalId: prevState.intervalId
-								};
-							});
-						});
-				}
-			}, REFRESH_TEMPO);
+	updateScenarii() {
+		//console.log('Scenario and logged');
+		this.setState({
+			loaded: false,
+		});
 
-		this.state = {
-			scenarii : [],
+		getScenario()
+			.then(fetchedScenarii => {
+				//console.log('fetched');
+				this.setState({
+					scenarii: fetchedScenarii,
+					loaded: true,
+					firstLoad: false
+				});
+			})
+			.catch((err) => {
+				//console.log(`error:${err}`);
+				this.setState({
+					loaded: true
+				});
+			});
+	}
+
+	componentWillMount() {
+		let interval = setInterval(() => this.updateScenarii(), REFRESH_TEMPO);
+
+		this.setState({
+			firstLoad: true,
 			intervalId: interval
-		};
+		});
+
+		this.updateScenarii();
 	}
 
-	componentWillUnmount () {
+	componentWillUnmount() {
 		clearInterval(this.state.intervalId);
 	}
 
 	render() {
-		//console.log('render');
-		if (isLoggedIn()) {
-			var scenarii = this.state.scenarii.map( (scenario,i) => <Scenario indice={i+1} scenario={scenario} key={scenario._id} eventKey={i}  />);
-			return (
+		let scenarii;
+
+		if (this.state.scenarii.length) {
+			scenarii = this.state.scenarii.map((scenario, i) =>
+				<Scenario indice={i + 1} scenario={scenario} key={scenario._id} eventKey={i} />);
+		} else {
+			scenarii = (
 				<div>
-					<Row>
-						<Col xs={12} md={12} >
-							<PageHeader>Your scenario</PageHeader>
-							
-						</Col>
-					</Row>
-					<Row>
-						<Col xs={12} md={12} >
-							<Loader loaded={this.state.loaded}>
-								<Alert bsStyle="success">
-							All scenario have been loaded !
-								</Alert>	
-							</Loader>
-						</Col>
-					</Row>
-					<Row>
-						<Col xs={12} md={12}>
-							<Accordion>{scenarii}</Accordion>
-						</Col>
-					</Row>
+					No scenarii found. Upload a scenario from the <a href="https://chrome.google.com/webstore/detail/wat-chrome-plugin/fopllklfdgccljiagdpeocpdnhlmlakc">Chrome Plugin</a>.
 				</div>
 			);
-		} else {
-			return (<Alert bsStyle="warning">
-				<strong>You are not yet logged in !</strong>
-			</Alert>);
 		}
+
+		return (
+			<div>
+				<Row>
+					<Col xs={12} md={12} >
+						<PageHeader>Your scenario</PageHeader>
+					</Col>
+				</Row>
+				<Row>
+					<Col xs={12} md={12} >
+						<Loader loaded={this.state.firstLoad}></Loader>
+					</Col>
+				</Row>
+				<Row>
+					<Col xs={12} md={12}>
+						<Accordion>{scenarii}</Accordion>
+					</Col>
+				</Row>
+			</div>
+		);
 	}
 
 }

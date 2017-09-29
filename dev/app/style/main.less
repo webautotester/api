@@ -1,0 +1,109 @@
+@color-primary-light: #FFD54F;
+@color-primary : #FFB300;
+@color-primary-dark : #FF8F00;
+@background-color: #FAFAFA;
+@navbar-color: white;
+
+#app {
+    margin: 0;
+    padding-bottom: 32px;
+    font-family: 'Source Sans Pro', sans-serif;
+    background-color: @background-color;
+    min-height: 100%;
+}
+
+.navbar {
+    background-image: none;
+    background-color: @navbar-color;
+    border-radius: 0;
+}
+
+.navbar-default .navbar-nav > li.active {
+    background-color: @color-primary-light;
+    & > a {
+        background-image: none;
+        background-color: transparent;
+        &:hover {
+            background-color: transparent;
+        }
+        &:focus {
+            background-color: transparent;
+        }
+        &:active {
+            background-color: transparent;
+        }
+    }
+}
+
+.centered-form {
+    max-width: 256px;
+    margin: 0 auto;
+
+    & > * {
+        margin-top: 32px;
+    }
+
+    button {
+        width: 100%;
+    }
+}
+
+.form-control {
+    border-radius: 0;
+}
+
+.btn {
+    border-radius: 0;
+    background-image: none;
+    background-color: @color-primary;
+    transition: all .25s ease-in-out;
+    text-shadow: none;
+    font-weight: 700;
+
+    &:hover {
+        background-color: @background-color;
+        color: black;
+    }
+}
+
+.jumbotron {
+    background-color: @color-primary-light;
+
+    h1 {
+        font-family: 'Rajdhani', sans-serif;
+        padding-top: 0;
+        margin-top: 0;
+    }   
+}
+
+.label-danger-orange {
+    background-color: @color-primary-dark;
+}
+
+.category-title {
+    margin: 0 16px;
+}
+
+h2 {
+    font-family: 'Kalam', cursive;
+}
+
+.page-subtitle {
+    margin-top: 0;
+}
+
+.image-description-element {
+    margin-top: 24px;
+    font-size: 1.35em;
+    text-align: center;
+}
+
+.centered-video {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.row {
+    margin: 32px 0;
+}

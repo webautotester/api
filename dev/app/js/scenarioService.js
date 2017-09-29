@@ -53,11 +53,11 @@ function get(url) {
 	return new Promise((resolve, reject) => {
 		axios.get(url)
 			.then( response => {
-				//console.log(`Response to GET ${url} : ${response.data}`);
+				console.log(`Response to GET ${url} : ${response.data}`);
 				resolve(response.data);
 			})
 			.catch (err => {
-				//console.log(`Error to GET ${url} : ${err} `);
+				console.log(`Error to GET ${url} : ${err} `);
 				reject(err);
 			});
 	});
