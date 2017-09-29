@@ -1,15 +1,20 @@
 @color-primary-light: #FFD54F;
 @color-primary : #FFB300;
 @color-primary-dark : #FF8F00;
+@background-color: #FAFAFA;
+@navbar-color: white;
 
-body {
+#app {
     margin: 0;
-    margin-bottom: 32px;
+    padding-bottom: 32px;
+    font-family: 'Source Sans Pro', sans-serif;
+    background-color: @background-color;
+    min-height: 100%;
 }
 
 .navbar {
     background-image: none;
-    background-color: white;
+    background-color: @navbar-color;
     border-radius: 0;
 }
 
@@ -56,13 +61,19 @@ body {
     font-weight: 700;
 
     &:hover {
-        background-color: white;
+        background-color: @background-color;
         color: black;
     }
 }
 
 .jumbotron {
     background-color: @color-primary-light;
+
+    h1 {
+        font-family: 'Rajdhani', sans-serif;
+        padding-top: 0;
+        margin-top: 0;
+    }   
 }
 
 .label-danger-orange {
@@ -73,13 +84,18 @@ body {
     margin: 0 16px;
 }
 
+h2 {
+    font-family: 'Kalam', cursive;
+}
+
 .page-subtitle {
     margin-top: 0;
 }
 
 .image-description-element {
     margin-top: 24px;
-    font-size: 1.1em;
+    font-size: 1.35em;
+    text-align: center;
 }
 
 .centered-video {
