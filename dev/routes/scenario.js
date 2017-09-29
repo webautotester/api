@@ -29,6 +29,29 @@ function init(serverNames, webServer, db) {
 			} else {
 				res.status(401).send('access denied').end();
 			}
+		})
+		.get('/api/scenario/:sid',(req, res) => {
+			//winston.info('call scenario');
+			if (req.isAuthenticated()) {
+				db.collection('scenario', {strict:true}, (err, scenarioCollection) => {
+					if (err) {
+						//winston.info('Collection scenarion not created yet !');
+						res.status(404).send(err).end();
+					} else {
+						scenarioCollection.find({_id:new ObjectID(req.params.sid)}).toArray()
+							.then(scenariosArray => {
+								//winston.info(`RouteScenario: response to GET = ${scenariosArray}`);
+								res.status(200).send(scenariosArray).end();
+							})
+							.catch(err => {
+								//winston.error(`RouteScenario: response to GET = ${err}`);
+								res.status(500).send(err).end();
+							});
+					}
+				});
+			} else {
+				res.status(401).send('access denied').end();
+			}
 		});
 
 	webServer

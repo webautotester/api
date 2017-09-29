@@ -9,6 +9,12 @@ export function getScenario() {
 	return get(url);
 }
 
+export function getOneScenario(sid) {
+	console.log('getOne');
+	const url = `${BASE_URL}/api/scenario/${sid}`;
+	return get(url);
+}
+
 export function removeScenario(sid) {
 	const url = `${BASE_URL}/api/scenario/${sid}`;
 	return new Promise((resolve, reject) => {

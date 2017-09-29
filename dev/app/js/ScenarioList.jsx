@@ -16,7 +16,7 @@ export default class ScenarioList extends React.Component {
 			scenarii: [],
 			loaded: false,
 			intervalId: null,
-			firstLoad: true
+			loadedAtLeastOnce: false
 		};
 	}
 
@@ -32,7 +32,7 @@ export default class ScenarioList extends React.Component {
 				this.setState({
 					scenarii: fetchedScenarii,
 					loaded: true,
-					firstLoad: false
+					loadedAtLeastOnce: true
 				});
 			})
 			.catch((err) => {
@@ -47,7 +47,7 @@ export default class ScenarioList extends React.Component {
 		let interval = setInterval(() => this.updateScenarii(), REFRESH_TEMPO);
 
 		this.setState({
-			firstLoad: true,
+			loadedAtLeastOnce: true,
 			intervalId: interval
 		});
 
@@ -75,13 +75,11 @@ export default class ScenarioList extends React.Component {
 		return (
 			<div>
 				<Row>
-					<Col xs={12} md={12} >
+					<Col xs={12} md={8} >
 						<PageHeader>Your scenario</PageHeader>
 					</Col>
-				</Row>
-				<Row>
-					<Col xs={12} md={12} >
-						<Loader loaded={this.state.firstLoad}></Loader>
+					<Col xs={12} md={4} >
+						<Loader loaded={this.state.loadedAtLeastOnce}></Loader>
 					</Col>
 				</Row>
 				<Row>

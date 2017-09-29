@@ -1,9 +1,10 @@
 import React from 'react';
 import {getRunForUser} from './scenarioService.js';
+import Run from './Run.jsx';
 import Loader from 'react-loader';
-import {PageHeader, Accordion, Col, Row} from 'react-bootstrap';
+import {PageHeader, Col, Row} from 'react-bootstrap';
 
-var REFRESH_TEMPO = 4000;
+var REFRESH_TEMPO = 40000;
 
 export default class ScenarioList extends React.Component {
 
@@ -14,7 +15,7 @@ export default class ScenarioList extends React.Component {
 			runs: [],
 			loaded: false,
 			intervalId: null,
-			firstLoad: true
+			loadedAtLeastOnce: false
 		};
 	}
 
@@ -22,6 +23,7 @@ export default class ScenarioList extends React.Component {
 		//console.log('Scenario and logged');
 		this.setState({
 			loaded: false,
+			loadedAtLeastOnce: true
 		});
 
 		var uid = sessionStorage.getItem('uid');
@@ -32,7 +34,7 @@ export default class ScenarioList extends React.Component {
 				this.setState({
 					runs: fetchedRuns,
 					loaded: true,
-					firstLoad: false
+					loadedAtLeastOnce: true
 				});
 			})
 			.catch((err) => {
@@ -47,7 +49,7 @@ export default class ScenarioList extends React.Component {
 		let interval = setInterval(() => this.updateRuns(), REFRESH_TEMPO);
 
 		this.setState({
-			firstLoad: true,
+			loadedAtLeastOnce: false,
 			intervalId: interval
 		});
 
@@ -60,10 +62,8 @@ export default class ScenarioList extends React.Component {
 
 	render() {
 		let runs;
-
 		if (this.state.runs.length) {
-			runs = this.state.runs.map((run) =>
-				<span> {run._id} </span>);
+			runs = this.state.runs.map( (arun) => <Run key={arun._id} run={arun}></Run>);
 		} else {
 			runs = (
 				<div>
@@ -75,18 +75,14 @@ export default class ScenarioList extends React.Component {
 		return (
 			<div>
 				<Row>
-					<Col xs={12} md={12} >
-						<PageHeader>Your Runs</PageHeader>
+					<Col xs={12} md={8} >
+						<PageHeader>Your New Runs</PageHeader>
 					</Col>
-				</Row>
-				<Row>
-					<Col xs={12} md={12} >
-						<Loader loaded={this.state.firstLoad}></Loader>
+					<Col xs={12} md={4} >
+						<Loader loaded={this.state.loadedAtLeastOnce}></Loader>
 					</Col>
-				</Row>
-				<Row>
-					<Col xs={12} md={12}>
-						<Accordion>{runs}</Accordion>
+					<Col xs={12} md={8} >
+						<div>{runs}</div>
 					</Col>
 				</Row>
 			</div>
