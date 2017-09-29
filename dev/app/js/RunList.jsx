@@ -4,7 +4,7 @@ import Run from './Run.jsx';
 import Loader from 'react-loader';
 import {PageHeader, Col, Row} from 'react-bootstrap';
 
-var REFRESH_TEMPO = 40000;
+var REFRESH_TEMPO = 4000;
 
 export default class ScenarioList extends React.Component {
 

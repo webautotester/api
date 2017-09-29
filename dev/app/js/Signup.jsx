@@ -85,7 +85,7 @@ export default class Login extends React.Component {
 						<ControlLabel>Password</ControlLabel>
 						<FormControl id="password" type="password" value={this.state.password} onChange={this.handleChange}/>
 					</FormGroup>
-					<Button type="submit">Sign In</Button>
+					<Button type="submit">Sign Up</Button>
 					{errorMessage}
 				</form>
 			);

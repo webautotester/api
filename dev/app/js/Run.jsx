@@ -1,5 +1,6 @@
 import React from 'react';
 import {getOneScenario} from './scenarioService.js';
+import {Col} from 'react-bootstrap';
 
 export default class Run extends React.Component {
 	constructor(props) {
@@ -34,18 +35,18 @@ export default class Run extends React.Component {
 
 		if (this.state.run.isSuccess) {
 			return (
-				<div>
-					{this.state.run._id}
-					{scenarioName}
-					{success}
-				</div>
+				<Col xs={12} md={8} >
+					<div>{success}{scenarioName}</div>
+					<div>Date: {this.state.run.date.toString()}</div>
+				</Col>
 			) ;
 		} else {
 			return (
-				<div>
-					{scenarioName}
-					{failure}
-				</div>
+				<Col xs={12} md={8} >
+					<div>{failure}{scenarioName}</div>
+					<div>Date: {this.state.run.date.toString()}</div>
+					<div>Error: {this.state.run.error}</div>
+				</Col>
 			);
 		}
 		

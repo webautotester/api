@@ -187,7 +187,7 @@ export default class Scenario extends React.Component {
 		delete divProps.indice;
 		delete divProps.scenario;
 
-		const head = `${this.props.indice} - Scenario (${this.state.scenario._id}) - URL : ${this.state.scenario.actions[0].url}`;
+		const head = `${this.props.indice} - ${this.state.scenario.actions[0].url}`;
 		const waitControlId = `wait${this.state.scenario._id}`;
 		const cssSelectorControlId = `cssselector${this.state.scenario._id}`;
 		const nameControlId = `name${this.state.scenario._id}`;
@@ -241,7 +241,8 @@ export default class Scenario extends React.Component {
 						<Modal.Title>Test Scenario Will Be Played </Modal.Title>
 					</Modal.Header>
 					<Modal.Body>
-						<p>The Scenario {this.state.scenario._id} has been requested to be played. Wait several minutes and look at your Runs</p>
+						<p>The Scenario has been requested to be played.</p>
+						<p> <emph>Wait several minutes </emph> and then, <emph>look at your Runs.</emph></p>
 					</Modal.Body>
 					<Modal.Footer>
 						<Button onClick={this.closePlayNowModal}>Close</Button>
