@@ -23,6 +23,7 @@ COPY dev/app/js/*.jsx dev/app/js/
 
 RUN mkdir dev/app/img
 COPY dev/app/img/*.png dev/app/img/
+COPY dev/app/img/*.svg dev/app/img/
 
 RUN mkdir dev/app/style
 COPY dev/app/style/*.less dev/app/style
