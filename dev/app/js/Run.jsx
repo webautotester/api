@@ -32,6 +32,7 @@ export default class Run extends React.Component {
 		var success = <img src="../img/success.png"/>;
 		var failure = <img src="../img/failure.png"/>;
 		var scenarioName = this.state.scenario ? this.state.scenario.name : '... featching scenario';
+		var error = this.state.run.error ? this.state.run.error : '... error';
 
 		if (this.state.run.isSuccess) {
 			return (
@@ -45,7 +46,7 @@ export default class Run extends React.Component {
 				<Col xs={12} md={8} >
 					<div>{failure}{scenarioName}</div>
 					<div>Date: {this.state.run.date.toString()}</div>
-					<div>Error: {this.state.run.error}</div>
+					<div>Error: {error}</div>
 				</Col>
 			);
 		}
