@@ -45,7 +45,12 @@ export function playNowScenario(sid) {
 }
 
 export function getRunForScenario(sid) {
-	const url = `${BASE_URL}/api/run/${sid}`;
+	const url = `${BASE_URL}/api/run/scenario/${sid}`;
+	return get(url);
+}
+
+export function getRunForUser(uid) {
+	const url = `${BASE_URL}/api/run/user/${uid}`;
 	return get(url);
 }
 

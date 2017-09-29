@@ -5,7 +5,7 @@ const winston = require('winston');
 
 function init (serverNames, webServer, db) {
 	webServer
-		.get('/api/run/:sid', (req, res) => {
+		.get('/api/run/scenario/:sid', (req, res) => {
 			//winston.info(`GET /run/${req.params.sid}`);
 			var sidID = new ObjectID(req.params.sid);
 			const N = 10;
@@ -15,7 +15,7 @@ function init (serverNames, webServer, db) {
 						res.status(404).send(err).end();
 					} else {
 						//winston.info(JSON.stringify(sidID));
-						var cursor = runCollection.find({sid:sidID});
+						var cursor = runCollection.find({sid:sidID, read:false});
 						//winston.info('Got Run Cursor');
 						cursor.count()
 							.then( count => {
@@ -37,8 +37,29 @@ function init (serverNames, webServer, db) {
 			} else {
 				res.status(401).send('access denied').end();
 			}
+		})
+		.get('/api/run/user/:uid', (req, res) => {
+			//winston.info(`GET /run/${req.params.sid}`);
+			var uidID = new ObjectID(req.params.uid);
+			if (req.isAuthenticated()) {
+				db.collection('run', {strict:true}, (err, runCollection) => {
+					if (err) {
+						res.status(404).send(err).end();
+					} else {
+						//winston.info(JSON.stringify(sidID));
+						runCollection.find({uid:uidID, read:false}).toArray()
+							.then(runsArray => {
+								res.status(200).send(runsArray).end();
+							})
+							.catch(err => {
+								res.status(500).send(err).end();
+							});
+					}
+				});
+			} else {
+				res.status(401).send('access denied').end();
+			}
 		});
-		
 }
 
 module.exports.init = init;

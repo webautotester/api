@@ -2,9 +2,10 @@ import React from 'react';
 import {render} from 'react-dom';
 import {BrowserRouter as Router, Route, browserHistory} from 'react-router-dom';
 import Home from './Home.jsx';
+import RunList from './RunList.jsx';
 import ScenarioList from './ScenarioList.jsx';
 import Login from './Login.jsx';
-import Signin from './Signin.jsx';
+import Signup from './Signup.jsx';
 import Logout from './Logout.jsx';
 import {isLoggedIn, addListenerOnLogin} from './authenticationService.js';
 
@@ -40,6 +41,11 @@ class App extends React.Component {
 							<NavItem eventKey={5}>Scenario</NavItem>
 						</LinkContainer>
 					</Nav>
+					<Nav>
+						<LinkContainer to="/run" >
+							<NavItem eventKey={6}>Run</NavItem>
+						</LinkContainer>
+					</Nav>
 					<Nav pullRight>
 						<LinkContainer to="/logout" >
 							<NavItem eventKey={4}>Logout</NavItem>
@@ -51,8 +57,8 @@ class App extends React.Component {
 			navBarItems = (
 				<div>
 					<Nav pullRight>
-						<LinkContainer to="/signin" >
-							<NavItem eventKey={2}>Sign In</NavItem>
+						<LinkContainer to="/signup" >
+							<NavItem eventKey={2}>Sign Up</NavItem>
 						</LinkContainer>
 						<LinkContainer to="/login" >
 							<NavItem eventKey={3}>Login</NavItem>
@@ -79,9 +85,10 @@ class App extends React.Component {
 					<Grid>
 						<Route exact path="/" component={Home} />
 						<Route path="/login" component={Login} />
-						<Route path="/signin" component={Signin} />
+						<Route path="/signup" component={Signup} />
 						<Route path="/logout" component={Logout} />
 						<Route path="/scenario" component={ScenarioList} />
+						<Route path="/run" component={RunList} />
 					</Grid>
 				</div>
 			</Router>
