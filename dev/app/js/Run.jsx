@@ -46,8 +46,22 @@ export default class Run extends React.Component {
 		var success = <img src="../img/success.png"/>;
 		var failure = <img src="../img/failure.png"/>;
 		var scenarioName = this.state.scenario ? this.state.scenario.name : '... featching scenario';
-		var error = this.state.run.error ? this.state.run.error : '... error';
 		var date = dateFormat(this.state.run.date, 'dddd, mmmm dS, yyyy, h:MM:ss TT');
+
+		let error;
+		if (this.state.run.error) {
+			if (this.state.run.error.length) {
+				error = <ul>Error:
+					<li>{error.message}</li>
+					<li>{error.code}</li>
+					<li>{error.details}</li>
+				</ul>;
+			} else {
+				error = <div> {this.state.run.error.toString()}</div>;
+			}
+		} else {
+			error = <div> An Error Occured Without Any Error Message </div>; 
+		}
 
 		if (this.state.run.isSuccess) {
 			return (
@@ -67,11 +81,8 @@ export default class Run extends React.Component {
 					<Col xs={12} md={8} >
 						<div>{failure}{scenarioName}</div>
 						<div>{date}</div>
-						<ul>Error:
-							<li>{error.message}</li>
-							<li>{error.code}</li>
-							<li>{error.details}</li>
-						</ul>
+						{error}
+						
 					</Col>
 					<Col xs={12} md={4} >
 						<Button bsStyle="danger" bsSize="large" onClick={this.onClickRemoveRun}>delete</Button>

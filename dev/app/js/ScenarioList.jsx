@@ -66,7 +66,7 @@ export default class ScenarioList extends React.Component {
 		} else {
 			scenarii = (
 				<div>
-					No scenarii found. Upload a scenario from the <a href="https://chrome.google.com/webstore/detail/wat-chrome-plugin/fopllklfdgccljiagdpeocpdnhlmlakc">Chrome Plugin</a>.
+					No scenario found. Upload a scenario thanks to our <a href="https://chrome.google.com/webstore/detail/wat-chrome-plugin/fopllklfdgccljiagdpeocpdnhlmlakc">Chrome Plugin</a>.
 				</div>
 			);
 		}
@@ -80,8 +80,6 @@ export default class ScenarioList extends React.Component {
 					<Col xs={12} md={4} >
 						<Loader loaded={this.state.loadedAtLeastOnce}></Loader>
 					</Col>
-				</Row>
-				<Row>
 					<Col xs={12} md={12}>
 						<Accordion>{scenarii}</Accordion>
 					</Col>
