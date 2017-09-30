@@ -46,7 +46,7 @@ export default class Run extends React.Component {
 				<Col xs={12} md={8} >
 					<div>{failure}{scenarioName}</div>
 					<div>Date: {this.state.run.date.toString()}</div>
-					<div>Error: {error}</div>
+					<div>Error: {error.toString()}</div>
 				</Col>
 			);
 		}
