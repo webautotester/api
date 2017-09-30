@@ -50,11 +50,11 @@ export default class Run extends React.Component {
 
 		let error;
 		if (this.state.run.error) {
-			if (this.state.run.error.length) {
+			if (this.state.run.error.message) {
 				error = <ul>Error:
-					<li>{error.message}</li>
-					<li>{error.code}</li>
-					<li>{error.details}</li>
+					<li>{this.state.run.error.message}</li>
+					<li>{this.state.run.error.code}</li>
+					<li>{this.state.run.error.details}</li>
 				</ul>;
 			} else {
 				error = <div> {this.state.run.error.toString()}</div>;
