@@ -30,6 +30,21 @@ export function removeScenario(sid) {
 	});
 }
 
+export function removeRun(rid) {
+	const url = `${BASE_URL}/api/run/${rid}`;
+	return new Promise((resolve, reject) => {
+		axios.delete(url)
+			.then( response => {
+				//console.log(`Response to DELETE ${url} : ${response.data}`);
+				resolve(response.data);
+			})
+			.catch (err => {
+				//console.log(`Error to DELETE ${url} : ${err} `);
+				reject(err);
+			});
+	});
+}
+
 export function isScenarioScheduled(sid) {
 	const url = `${BASE_URL}/api/isscheduled/${sid}`;
 	return get(url);

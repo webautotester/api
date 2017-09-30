@@ -1,11 +1,10 @@
 import React from 'react';
-import {isLoggedIn} from './authenticationService.js';
 import {getScenario} from './scenarioService.js';
 import Scenario from './Scenario.jsx';
 import Loader from 'react-loader';
-import {PageHeader, Accordion, Col, Alert, Row} from 'react-bootstrap';
+import {PageHeader, Accordion, Col, Row} from 'react-bootstrap';
 
-var REFRESH_TEMPO = 4000;
+var REFRESH_TEMPO = 10000;
 
 export default class ScenarioList extends React.Component {
 

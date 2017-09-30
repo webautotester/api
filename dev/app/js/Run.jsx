@@ -1,6 +1,7 @@
 import React from 'react';
-import {getOneScenario} from './scenarioService.js';
-import {Col} from 'react-bootstrap';
+import {getOneScenario, removeRun} from './scenarioService.js';
+import {Col, Button} from 'react-bootstrap';
+import dateFormat from 'dateformat';
 
 export default class Run extends React.Component {
 	constructor(props) {
@@ -9,6 +10,7 @@ export default class Run extends React.Component {
 		this.state = {
 			run : run,
 		};
+		this.onClickRemoveRun = this.onClickRemoveRun.bind(this);
 	}
     
 	componentDidMount() {
@@ -28,26 +30,53 @@ export default class Run extends React.Component {
 			});
 	}
 
+	onClickRemoveRun(event) {
+		event.preventDefault();
+		//console.log('remove');
+		removeRun(this.state.run._id)
+			.then( msg => {
+				//console.log(msg);
+			})
+			.catch( err => {
+				//console.log(err);
+			});
+	}
+
 	render() {
 		var success = <img src="../img/success.png"/>;
 		var failure = <img src="../img/failure.png"/>;
 		var scenarioName = this.state.scenario ? this.state.scenario.name : '... featching scenario';
 		var error = this.state.run.error ? this.state.run.error : '... error';
+		var date = dateFormat(this.state.run.date, 'dddd, mmmm dS, yyyy, h:MM:ss TT');
 
 		if (this.state.run.isSuccess) {
 			return (
-				<Col xs={12} md={8} >
-					<div>{success}{scenarioName}</div>
-					<div>Date: {this.state.run.date.toString()}</div>
-				</Col>
+				<div>
+					<Col xs={12} md={8} >
+						<div>{success}{scenarioName}</div>
+						<div>{date}</div>
+					</Col>
+					<Col xs={12} md={4} >
+						<Button bsStyle="danger" bsSize="large" onClick={this.onClickRemoveRun}>delete</Button>
+					</Col>
+				</div>
 			) ;
 		} else {
 			return (
-				<Col xs={12} md={8} >
-					<div>{failure}{scenarioName}</div>
-					<div>Date: {this.state.run.date.toString()}</div>
-					<div>Error: {error.toString()}</div>
-				</Col>
+				<div>
+					<Col xs={12} md={8} >
+						<div>{failure}{scenarioName}</div>
+						<div>{date}</div>
+						<ul>Error:
+							<li>{error.message}</li>
+							<li>{error.code}</li>
+							<li>{error.details}</li>
+						</ul>
+					</Col>
+					<Col xs={12} md={4} >
+						<Button bsStyle="danger" bsSize="large" onClick={this.onClickRemoveRun}>delete</Button>
+					</Col>
+				</div>
 			);
 		}
 		

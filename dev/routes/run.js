@@ -60,6 +60,30 @@ function init (serverNames, webServer, db) {
 				res.status(401).send('access denied').end();
 			}
 		});
+
+	webServer
+		.delete('/api/run/:rid',(req, res) => {
+			if (req.isAuthenticated()) {
+				db.collection('run', {strict:true}, (err, runCollection) => {
+					if (err) {
+						//winston.info('Collection run not created yet !');
+						res.status(404).send(err).end();
+					} else {
+						runCollection.remove({_id:new ObjectID(req.params.rid)})
+							.then(() => {
+								//winston.info('RouteRun: response to Delete ');
+								res.status(200).send().end();
+							})
+							.catch(err => {
+								//winston.error(`RouteRun: response to Delete = ${err}`);
+								res.status(500).send(err).end();
+							});
+					}
+				});					
+			} else {
+				res.status(401).send('access denied').end();
+			}
+		}); 
 }
 
 module.exports.init = init;
