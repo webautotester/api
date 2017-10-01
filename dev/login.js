@@ -1,3 +1,4 @@
+var winston = require('winston');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const ObjectID = require('mongodb').ObjectID;
@@ -32,9 +33,11 @@ function init (serverNames, webServer, db) {
 	});
 
 	passport.use(new LocalStrategy(
-		(username, password, done) => {			
+		(username, password, done) => {
+			winston.info(`login: ${password}, ${done}`);	
 			db.collection('user', (err, userCollection) => {
 				if (err) {
+					winston.error(err);
 					return done(err);
 				} else {
 					var user = {
@@ -46,10 +49,12 @@ function init (serverNames, webServer, db) {
 							if (foundUser) {
 								return done(null, foundUser);
 							} else {
+								winston.info('use not found');
 								return done(null, false, {message:'Incorrect Login/Password'});
 							}
 						})
 						.catch(err => {
+							winston.error(err);
 							return done(err);
 						});
 				}
