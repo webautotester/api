@@ -34,7 +34,7 @@ function init (serverNames, webServer, db) {
 
 	passport.use(new LocalStrategy(
 		(username, password, done) => {
-			winston.info(`login: ${password}, ${done}`);	
+			winston.info(`login: ${username}, ${password}`);	
 			db.collection('user', (err, userCollection) => {
 				if (err) {
 					winston.error(err);
@@ -49,7 +49,7 @@ function init (serverNames, webServer, db) {
 							if (foundUser) {
 								return done(null, foundUser);
 							} else {
-								winston.info('use not found');
+								winston.info('user not found');
 								return done(null, false, {message:'Incorrect Login/Password'});
 							}
 						})
