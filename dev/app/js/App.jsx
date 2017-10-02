@@ -7,6 +7,7 @@ import ScenarioList from './ScenarioList.jsx';
 import Login from './Login.jsx';
 import Signup from './Signup.jsx';
 import Logout from './Logout.jsx';
+import About from './About.jsx';
 import {isLoggedIn, addListenerOnLogin} from './authenticationService.js';
 
 import {Nav, Navbar, NavItem, Grid} from 'react-bootstrap';
@@ -44,6 +45,11 @@ class App extends React.Component {
 					<Nav>
 						<LinkContainer to="/run" >
 							<NavItem eventKey={6}>Run</NavItem>
+						</LinkContainer>
+					</Nav>
+					<Nav>
+						<LinkContainer to="/about" >
+							<NavItem eventKey={7}>About</NavItem>
 						</LinkContainer>
 					</Nav>
 					<Nav pullRight>
@@ -89,6 +95,7 @@ class App extends React.Component {
 						<Route path="/logout" component={Logout} />
 						<Route path="/scenario" component={ScenarioList} />
 						<Route path="/run" component={RunList} />
+						<Route path="/about" component={About} />
 					</Grid>
 				</div>
 			</Router>
