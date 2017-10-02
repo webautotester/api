@@ -45,6 +45,7 @@ RUN npm run prod
 COPY dev/app/img/demo.mp4 ops/app/img/
 
 WORKDIR /tmp/front/ops
+RUN mkdir app/img/screen
 
 EXPOSE 80
 
