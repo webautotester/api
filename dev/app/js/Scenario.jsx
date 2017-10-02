@@ -17,6 +17,14 @@ export default class Scenario extends React.Component {
 		if (! scenario.name) {
 			scenario.name = 'MyScenario';
 		}
+		if (! scenario.assert) {
+			scenario.assert = {
+				end : true,
+				selector : 'body',
+				property: 'innerHTML',
+				contains: 'success'
+			};
+		}
 		this.state = {
 			scenario : scenario,
 			isScheduled : false,
@@ -31,6 +39,7 @@ export default class Scenario extends React.Component {
 		this.onClickPlayNow = this.onClickPlayNow.bind(this);
 		this.onClickRemoveScenario = this.onClickRemoveScenario.bind(this);
 		this.closePlayNowModal = this.closePlayNowModal.bind(this);
+		this.handleChangeAssert = this.handleChangeAssert.bind(this);
 	}
 
 	componentDidMount() {
@@ -129,6 +138,32 @@ export default class Scenario extends React.Component {
 			});
 	}
 
+	handleChangeAssert(event) {
+		event.preventDefault();
+		const assertEndId = `end${this.state.scenario._id}`;
+		const assertSelectorId = `selector${this.state.scenario._id}`;
+		const assertPropertyId = `property${this.state.scenario._id}`;
+		const assertContainsId = `contains${this.state.scenario._id}`;
+		var newScenario = this.state.scenario;
+		newScenario.assert = {
+			end : document.getElementById(assertEndId).checked,
+			selector : document.getElementById(assertSelectorId).value,
+			property : document.getElementById(assertPropertyId).value,
+			contains : document.getElementById(assertContainsId).value
+		};
+		pushScenario(newScenario)
+			.then( (response) => {
+				this.setState( () => {
+					return {
+						scenario: newScenario
+					};
+				});
+			})
+			.catch( (err) => {
+
+			});
+	}
+
 	onClickSchedule(event) {
 		event.preventDefault();
 		scheduleScenario(this.state.scenario._id, !this.state.isScheduled)
@@ -191,25 +226,27 @@ export default class Scenario extends React.Component {
 		const waitControlId = `wait${this.state.scenario._id}`;
 		const cssSelectorControlId = `cssselector${this.state.scenario._id}`;
 		const nameControlId = `name${this.state.scenario._id}`;
+		const assertEndId = `end${this.state.scenario._id}`;
+		const assertSelectorId = `selector${this.state.scenario._id}`;
+		const assertPropertyId = `property${this.state.scenario._id}`;
+		const assertContainsId = `contains${this.state.scenario._id}`;
 		
 		return (
 			<Panel header={head} {...divProps} >
 				<Col xs={12} md={8} >
-					<h2>Configure Your Scenario</h2>
+					<h2>Configuration</h2>
 					<form>
 						<FormGroup >
-							<ControlLabel>Name </ControlLabel>
+							<ControlLabel>Name or Intent of the Scenario </ControlLabel>
 							<FormControl id={nameControlId} type="text" defaultValue={this.state.scenario.name} onChange={this.handleChangeName}/>
 						</FormGroup>
 						<FormGroup >
-							<ControlLabel>Wait time in ms (after each action)</ControlLabel>
+							<ControlLabel>Run Step Wait Time in ms (1000 is recommended )</ControlLabel>
 							<FormControl id={waitControlId} type="number" defaultValue={this.state.scenario.wait} onChange={this.handleChangeWait}/>
 						</FormGroup>
 						<FormGroup >
-							<ControlLabel>CSS Selector Used To Identify Element</ControlLabel>
+							<ControlLabel>CSS Selector Used By WAT For Running The Scenario (Choose The One That Makes Your Runs Passing)</ControlLabel>
 							<select id={cssSelectorControlId} 
-								componentClass="select" 
-								placeholder="select" 
 								defaultValue={this.state.scenario.cssselector} 
 								onChange={this.handleChangeCSSSelector}>
 								<option value="watId">WAT With Id</option>
@@ -223,8 +260,35 @@ export default class Scenario extends React.Component {
 					<Button bsStyle="danger" bsSize="large" onClick={this.onClickRemoveScenario}>delete</Button>
 				</Col>
 				<Col xs={12} md={12} >
-					<Checkbox checked={this.state.isScheduled} onChange={this.onClickSchedule}> Scheduling (once per day, each morning)
+					<Checkbox checked={this.state.isScheduled} onChange={this.onClickSchedule}> Run Scheduling (once per day, each morning)
 					</Checkbox>
+				</Col>
+				<Col xs={12} md={12}>
+					<h2>Assert</h2>
+					<form>
+						<Checkbox id={assertEndId} checked={this.state.scenario.assert.end} onChange={this.handleChangeAssert}>
+      						The scenario just runs until the end
+						</Checkbox>
+						<FormGroup >
+							<ControlLabel>Tested HTML Element CSS Selector </ControlLabel>
+							<FormControl id={assertSelectorId} type="text" defaultValue={this.state.scenario.assert.selector} readOnly={this.state.scenario.assert.end} onChange={this.handleChangeAssert}/>
+						</FormGroup>
+						<FormGroup >
+							<ControlLabel>Tested Property </ControlLabel>
+							<select id={assertPropertyId}
+								defaultValue={this.state.scenario.assert.property} 
+								disabled={this.state.scenario.assert.end}
+								onChange={this.handleChangeAssert}>
+								<option value="value">Value</option>
+								<option value="inner">innerHTML</option>
+								<option value="text">Text</option>
+							</select>
+						</FormGroup>
+						<FormGroup >
+							<ControlLabel>Expected Value That Should Be Contained In</ControlLabel>
+							<FormControl id={assertContainsId} type="text" defaultValue={this.state.scenario.assert.contains} readOnly={this.state.scenario.assert.end} onChange={this.handleChangeAssert} />
+						</FormGroup>
+					</form>
 				</Col>
 				<Col xs={12} md={12} >
 					<Button onClick={this.onClickPlayNow}>Play Now</Button>
