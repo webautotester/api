@@ -270,7 +270,7 @@ export default class Scenario extends React.Component {
       						The scenario just runs until the end
 						</Checkbox>
 						<FormGroup >
-							<ControlLabel>Tested HTML Element CSS Selector </ControlLabel>
+							<ControlLabel>Tested HTML Element CSS ID </ControlLabel>
 							<FormControl id={assertSelectorId} type="text" defaultValue={this.state.scenario.assert.selector} readOnly={this.state.scenario.assert.end} onChange={this.handleChangeAssert}/>
 						</FormGroup>
 						<FormGroup >
@@ -280,8 +280,7 @@ export default class Scenario extends React.Component {
 								disabled={this.state.scenario.assert.end}
 								onChange={this.handleChangeAssert}>
 								<option value="value">Value</option>
-								<option value="inner">innerHTML</option>
-								<option value="text">Text</option>
+								<option value="innerHTML">innerHTML</option>
 							</select>
 						</FormGroup>
 						<FormGroup >
