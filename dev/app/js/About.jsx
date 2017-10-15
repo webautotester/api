@@ -7,8 +7,8 @@ export default class About extends React.Component {
 		return (
 			<div>
 				<Row>
-					<Jumbotron><h1>WAT</h1>
-						<h2 className="page-subtitle">Join WAT</h2>
+					<Jumbotron><h1>Join WAT</h1>
+						<h2 className="page-subtitle">The First Open Source Web Monitoring Environment !</h2>
 						<Label className="label-danger-orange">Beta test edition</Label>
 					</Jumbotron>
 				</Row>

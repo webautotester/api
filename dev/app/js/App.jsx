@@ -81,7 +81,7 @@ class App extends React.Component {
 						<Navbar.Header>
 							<Navbar.Brand>
 								<LinkContainer to="/">
-									<a href="#" eventKey={1}>Home</a>
+									<a href="#">Home</a>
 								</LinkContainer>
 							</Navbar.Brand>
 						</Navbar.Header>
