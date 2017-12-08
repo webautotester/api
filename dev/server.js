@@ -10,8 +10,7 @@ var express = require('express');
 var helmet = require('helmet');
 var path = require('path');
 var bodyParser = require('body-parser');
-var cookieParser = require('cookie-parser');
-var cookieSession = require('cookie-session');
+
 var applicationRoot = __dirname;
 const MongoClient = require('mongodb').MongoClient;
 var app = express();
@@ -21,13 +20,6 @@ app.use(helmet());
 //files for HTML pages
 app.use(express.static(path.join(applicationRoot, './app')));
 
-app.use(cookieParser());
-app.use(cookieSession({
-	name: 'session',
-	keys: ['key1','key2'],
-	// Cookie Options
-	maxAge: 24 * 60 * 60 * 1000 // 24 hours
-}));
 app.use(bodyParser.json()); // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({ // to support URL-encoded bodies
 	extended: true

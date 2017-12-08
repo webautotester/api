@@ -17,7 +17,8 @@ export function login(credentials) {
 					sessionStorage.setItem('logged', true);
 					console.log(response.data);
 					console.log(response.data._id);
-					sessionStorage.setItem('uid', response.data._id);
+					sessionStorage.setItem('username', response.data.username);
+					sessionStorage.setItem('jwt',response.data.jwt);
 
 					listeners.forEach((f) => f(true));
 
@@ -36,7 +37,8 @@ export function logout() {
 		axios.get(url)
 			.then(response => {
 				sessionStorage.removeItem('logged');
-				sessionStorage.removeItem('uid');
+				sessionStorage.removeItem('username');
+				sessionStorage.removeItem('jwt');
 
 				listeners.forEach((f) => f(false));
 

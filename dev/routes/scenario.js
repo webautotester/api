@@ -1,8 +1,6 @@
 const winston = require('winston');
 const ObjectID = require('mongodb').ObjectID;
 
-
-
 function init(serverNames, webServer, db) {
 	//winston.info('record scenario');
 	webServer
@@ -35,7 +33,7 @@ function init(serverNames, webServer, db) {
 			if (req.isAuthenticated()) {
 				db.collection('scenario', {strict:true}, (err, scenarioCollection) => {
 					if (err) {
-						//winston.info('Collection scenarion not created yet !');
+						//winston.info('Collection scenario not created yet !');
 						res.status(404).send(err).end();
 					} else {
 						scenarioCollection.find({_id:new ObjectID(req.params.sid)}).toArray()

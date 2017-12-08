@@ -77,7 +77,7 @@ export function getRunForUser(uid) {
 
 function get(url) {
 	return new Promise((resolve, reject) => {
-		axios.get(url)
+		axios.get(url, {headers: {'Authorization': `Bearer ${sessionStorage.getItem('jwt')}`}})
 			.then( response => {
 				console.log(`Response to GET ${url} : ${response.data}`);
 				resolve(response.data);
@@ -92,7 +92,7 @@ function get(url) {
 export function pushScenario(scenario) {
 	return new Promise((resolve, reject) => {
 		const url = `${BASE_URL}/api/scenario`;
-		axios.post(url, scenario)
+		axios.post(url, scenario, {headers: {'Authorization': `Bearer ${sessionStorage.getItem('jwt')}`}})
 			.then( response => {
 				resolve(response.data);
 			})

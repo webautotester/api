@@ -1,14 +1,50 @@
 var winston = require('winston');
+
+const jwt = require('jsonwebtoken');
+
 const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
+const passportJWT = require('passport-jwt');
+
+const ExtractJwt = passportJWT.ExtractJwt;
+const JwtStrategy = passportJWT.Strategy;
+
+
+
 const ObjectID = require('mongodb').ObjectID;
 
 function init (serverNames, webServer, db) {
-	
 	webServer.use(passport.initialize());
-	webServer.use(passport.session());
 
-	passport.serializeUser((user, done) => {
+	var jwtOptions = {};
+	jwtOptions.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
+	jwtOptions.secretOrKey = 'watSecretKeyIsVeryVerySecret';
+
+	var strategy = new JwtStrategy(jwtOptions,
+		(jwtPayload, done) => {
+			winston.info('payload received',jwtPayload); 
+			db.collection('user', (err, userCollection) => {
+				if (err) {
+					winston.error(err);
+					return done(err);
+				} else {
+					userCollection.findOne({_id:new ObjectID(jwtPayload._id)})
+						.then( foundUser => {
+							if (foundUser) {
+								return done(null, foundUser);
+							} else {
+								winston.info('user not found');
+								return done(null, false, {message:'Incorrect Login/Password'});
+							}
+						})
+						.catch(err => {
+							winston.error(err);
+							return done(err);
+						});
+				}
+			});
+		});
+	
+	/*passport.serializeUser((user, done) => {
 		done(null, user._id);
 	});
 
@@ -30,46 +66,38 @@ function init (serverNames, webServer, db) {
 					});
 			}
 		});
-	});
+	});*/
 
-	passport.use(new LocalStrategy(
-		(username, password, done) => {
-			winston.info(`login: ${username}, ${password}`);	
-			db.collection('user', (err, userCollection) => {
-				if (err) {
-					winston.error(err);
-					return done(err);
-				} else {
-					var user = {
-						username : username,
-						password : password
-					};
-					userCollection.findOne(user)
-						.then( foundUser => {
-							if (foundUser) {
-								return done(null, foundUser);
-							} else {
-								winston.info('user not found');
-								return done(null, false, {message:'Incorrect Login/Password'});
-							}
-						})
-						.catch(err => {
-							winston.error(err);
-							return done(err);
-						});
-				}
-			});
-		}
-	));
-
-
+	passport.use(strategy);
     
-	webServer.post('/api/login',
-		passport.authenticate('local'),
-		(req, res) => {
-			res.status(200).send(req.user).end();
-		}
-	);
+	webServer.post('/api/login', (req, res) => {
+		var user = {
+			username : req.body.username,
+			password : req.body.password
+		};
+		db.collection('user', (err, userCollection) => {
+			if (err) {
+				winston.error(err);
+				res.status(404).json({message:JSON.stringify(err)});
+			} else {
+				userCollection.findOne(user)
+					.then( foundUser => {
+						if (foundUser) {
+							var payload = {_id: user._id, username: user.username};
+							var token = jwt.sign(payload, jwtOptions.secretOrKey);
+							res.json({message: 'user authenticated!', username: user.username, jwt: token});
+						} else {
+							winston.info('user not found');
+							res.status(401).json({message:'user not found'});
+						}
+					})
+					.catch(err => {
+						winston.error(err);
+						res.status(404).json({message:JSON.stringify(err)});
+					});
+			}
+		});
+	});
 
 	webServer.post('/api/signin', (req, res) => {
 		db.collection('user', (err, userCollection) => {
@@ -104,7 +132,8 @@ function init (serverNames, webServer, db) {
 	webServer.get('/api/logout', (req, res)=> {
 		req.logOut();
 		req.session = null;
-		res.status(200).clearCookie('session', {path: '/'}).json({status: 'Success'});
+		res.status(200).json({status: 'Success'});
+		//res.status(200).clearCookie('session', {path: '/'}).json({status: 'Success'});
 	});
 }
 
