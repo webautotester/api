@@ -46,22 +46,22 @@ export function removeRun(rid) {
 }
 
 export function isScenarioScheduled(sid) {
-	const url = `${BASE_URL}/api/isscheduled/${sid}`;
+	const url = `${BASE_URL}/api/schedule/isscheduled/${sid}`;
 	return get(url);
 }
 
 export function scheduleScenario(sid, isScheduled) {
 	let url;
 	if (isScheduled) {
-		url = `${BASE_URL}/api/schedule/${sid}`;
+		url = `${BASE_URL}/api/schedule/schedule/${sid}`;
 	} else {
-		url = `${BASE_URL}/api/unschedule/${sid}`;
+		url = `${BASE_URL}/api/schedule/unschedule/${sid}`;
 	}
 	return get(url);
 }
 
 export function playNowScenario(sid) {
-	const url = `${BASE_URL}/api/playnow/${sid}`;
+	const url = `${BASE_URL}/api/schedule/playnow/${sid}`;
 	return get(url);
 }
 
