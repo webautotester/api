@@ -5,11 +5,26 @@ var serverNames = {
 	schedulerServerName : argv.scheduler || 'localhost'
 };
 
-var winston = require('winston');
+const { createLogger, format, transports } = require('winston');
 var express = require('express');
 var helmet = require('helmet');
 var path = require('path');
 var bodyParser = require('body-parser');
+
+const logger = createLogger({
+	level: 'info',
+	format: format.simple(),
+	transports: [
+		new transports.File({ filename: 'error.log', level: 'error' }),
+		new transports.File({ filename: 'combined.log' })
+	]
+});
+  
+if (process.env.NODE_ENV !== 'production') {
+	logger.add(new transports.Console({
+		format: format.simple()
+	}));
+}
 
 var applicationRoot = __dirname;
 const MongoClient = require('mongodb').MongoClient;
@@ -17,11 +32,10 @@ var app = express();
 
 app.use(helmet());
 
-//files for HTML pages
 app.use(express.static(path.join(applicationRoot, './app')));
 
-app.use(bodyParser.json()); // to support JSON-encoded bodies
-app.use(bodyParser.urlencoded({ // to support URL-encoded bodies
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
 	extended: true
 }));
 app.use(function(req, res, next) {
@@ -37,21 +51,21 @@ initRoutes();
 function initRoutes() {
 	MongoClient.connect(dbUrl)
 		.then(db => {
-			require('./login.js').init(serverNames,app,db);
-			require('./routes/scenario.js').init(serverNames,app,db);
-			require('./routes/run.js').init(serverNames,app,db);
-			require('./routes/schedule.js').init(serverNames,app,db);
+			require('./login.js').init(serverNames,app,db, logger);
+			require('./routes/scenario.js').init(serverNames,app,db, logger);
+			require('./routes/run.js').init(serverNames,app,db, logger);
+			require('./routes/schedule.js').init(serverNames,app,db, logger);
 
 			app.get('*', (req,res) => {
 				res.sendFile(path.join(applicationRoot, './app/index.html'));
 			});
 
 			app.listen(PORT, function() {
-				winston.info(`WAT Front is listening on port ${PORT}`);
+				logger.info(`WAT Front is listening on port ${PORT}`);
 			});
 		})
 		.catch((err) => {
-			winston.info(err);
+			logger.info(err);
 			setTimeout(() => {
 				initRoutes();
 			}, 3000);

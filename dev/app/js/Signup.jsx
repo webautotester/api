@@ -3,6 +3,8 @@ import {isLoggedIn, signin} from './authenticationService.js';
 
 import { FormGroup, FormControl, ControlLabel, Button, Alert } from 'react-bootstrap';
 
+import { sha256 } from 'js-sha256';
+
 export default class Login extends React.Component {
 
 	constructor(props) {
@@ -10,7 +12,7 @@ export default class Login extends React.Component {
 		this.state = {
 			credential : {
 				username : '',
-				password :''
+				password :sha256('')
 			},
 			message : null
 		};
@@ -32,7 +34,7 @@ export default class Login extends React.Component {
 			case 'password' : return {
 				credential: {
 					username: prevState.credential.username, 
-					password: eventValue},
+					password: sha256(eventValue)},
 				message: null};
 			}
 		});

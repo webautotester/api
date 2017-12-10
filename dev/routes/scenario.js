@@ -1,25 +1,30 @@
-const winston = require('winston');
 const ObjectID = require('mongodb').ObjectID;
+const express = require('express');
+const passport = require('passport');
 
-function init(serverNames, webServer, db) {
-	//winston.info('record scenario');
-	webServer
-		.get('/api/scenario',(req, res) => {
-			//winston.info('call scenario');
+function init(serverNames, webServer, db, logger) {
+	logger.info('record scenario');
+	let router = express.Router();
+
+	router.use(passport.authenticate('jwt', {session:false}));
+
+	router
+		.get('/',(req, res) => {
+			logger.info('call scenario');
 			var user = req.user;
 			if (req.isAuthenticated()) {
 				db.collection('scenario', {strict:true}, (err, scenarioCollection) => {
 					if (err) {
-						//winston.info('Collection scenarion not created yet !');
+						logger.info('Collection scenarion not created yet !');
 						res.status(404).send(err).end();
 					} else {
 						scenarioCollection.find({uid:new ObjectID(user._id)}).toArray()
 							.then(scenariosArray => {
-								//winston.info(`RouteScenario: response to GET = ${scenariosArray}`);
+								logger.info(`RouteScenario: response to GET = ${scenariosArray}`);
 								res.status(200).send(scenariosArray).end();
 							})
 							.catch(err => {
-								//winston.error(`RouteScenario: response to GET = ${err}`);
+								logger.error(`RouteScenario: response to GET = ${err}`);
 								res.status(500).send(err).end();
 							});
 					}
@@ -28,21 +33,21 @@ function init(serverNames, webServer, db) {
 				res.status(401).send('access denied').end();
 			}
 		})
-		.get('/api/scenario/:sid',(req, res) => {
-			//winston.info('call scenario');
+		.get('/:sid',(req, res) => {
+			logger.info('call scenario');
 			if (req.isAuthenticated()) {
 				db.collection('scenario', {strict:true}, (err, scenarioCollection) => {
 					if (err) {
-						//winston.info('Collection scenario not created yet !');
+						logger.info('Collection scenario not created yet !');
 						res.status(404).send(err).end();
 					} else {
 						scenarioCollection.find({_id:new ObjectID(req.params.sid)}).toArray()
 							.then(scenariosArray => {
-								//winston.info(`RouteScenario: response to GET = ${scenariosArray}`);
+								logger.info(`RouteScenario: response to GET = ${scenariosArray}`);
 								res.status(200).send(scenariosArray).end();
 							})
 							.catch(err => {
-								//winston.error(`RouteScenario: response to GET = ${err}`);
+								logger.error(`RouteScenario: response to GET = ${err}`);
 								res.status(500).send(err).end();
 							});
 					}
@@ -52,8 +57,8 @@ function init(serverNames, webServer, db) {
 			}
 		});
 
-	webServer
-		.post('/api/scenario',(req, res) => {
+	router
+		.post('/',(req, res) => {
 			var user = req.user;
 			if (req.isAuthenticated()) {
 				db.collection('scenario', (err, scenarioCollection) => {
@@ -77,7 +82,7 @@ function init(serverNames, webServer, db) {
 								res.status(200).send(savedScenario).end();
 							})
 							.catch(err => {
-								//winston.error(err);
+								logger.error(err);
 								res.status(500).send(err).end();
 							});
 					}
@@ -87,21 +92,21 @@ function init(serverNames, webServer, db) {
 			}
 		});
 	
-	webServer
-		.delete('/api/scenario/:sid',(req, res) => {
+	router
+		.delete('/:sid',(req, res) => {
 			if (req.isAuthenticated()) {
 				db.collection('scenario', {strict:true}, (err, scenarioCollection) => {
 					if (err) {
-						//winston.info('Collection scenarion not created yet !');
+						logger.info('Collection scenarion not created yet !');
 						res.status(404).send(err).end();
 					} else {
 						scenarioCollection.remove({_id:new ObjectID(req.params.sid)})
 							.then(() => {
-								//winston.info('RouteScenario: response to Delete ');
+								logger.info('RouteScenario: response to Delete ');
 								res.status(200).send().end();
 							})
 							.catch(err => {
-								//winston.error(`RouteScenario: response to Delete = ${err}`);
+								logger.error(`RouteScenario: response to Delete = ${err}`);
 								res.status(500).send(err).end();
 							});
 					}
@@ -110,6 +115,8 @@ function init(serverNames, webServer, db) {
 				res.status(401).send('access denied').end();
 			}
 		}); 
+
+	webServer.use('/api/scenario', router);
 		
 }
 

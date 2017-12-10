@@ -1,5 +1,3 @@
-var winston = require('winston');
-
 const jwt = require('jsonwebtoken');
 
 const passport = require('passport');
@@ -12,7 +10,7 @@ const JwtStrategy = passportJWT.Strategy;
 
 const ObjectID = require('mongodb').ObjectID;
 
-function init (serverNames, webServer, db) {
+function init (serverNames, webServer, db, logger) {
 	webServer.use(passport.initialize());
 
 	var jwtOptions = {};
@@ -21,10 +19,10 @@ function init (serverNames, webServer, db) {
 
 	var strategy = new JwtStrategy(jwtOptions,
 		(jwtPayload, done) => {
-			winston.info('payload received',jwtPayload); 
+			logger.info('payload received',jwtPayload); 
 			db.collection('user', (err, userCollection) => {
 				if (err) {
-					winston.error(err);
+					logger.error(err);
 					return done(err);
 				} else {
 					userCollection.findOne({_id:new ObjectID(jwtPayload._id)})
@@ -32,42 +30,18 @@ function init (serverNames, webServer, db) {
 							if (foundUser) {
 								return done(null, foundUser);
 							} else {
-								winston.info('user not found');
+								logger.info('user not found');
 								return done(null, false, {message:'Incorrect Login/Password'});
 							}
 						})
 						.catch(err => {
-							winston.error(err);
+							logger.error(err);
 							return done(err);
 						});
 				}
 			});
 		});
 	
-	/*passport.serializeUser((user, done) => {
-		done(null, user._id);
-	});
-
-	passport.deserializeUser((_id,done) => {
-		db.collection('user', (err, userCollection) => {
-			if (err) {
-				return done(err);
-			} else {
-				userCollection.findOne({_id:new ObjectID(_id)})
-					.then( foundUser => {
-						if (foundUser) {
-							return done(null, foundUser);
-						} else {
-							return done(null, false, {message:'Incorrect Login/Password'});
-						}
-					})
-					.catch(err => {
-						return done(err);
-					});
-			}
-		});
-	});*/
-
 	passport.use(strategy);
     
 	webServer.post('/api/login', (req, res) => {
@@ -77,22 +51,22 @@ function init (serverNames, webServer, db) {
 		};
 		db.collection('user', (err, userCollection) => {
 			if (err) {
-				winston.error(err);
+				logger.error(err);
 				res.status(404).json({message:JSON.stringify(err)});
 			} else {
 				userCollection.findOne(user)
 					.then( foundUser => {
 						if (foundUser) {
-							var payload = {_id: user._id, username: user.username};
-							var token = jwt.sign(payload, jwtOptions.secretOrKey);
-							res.json({message: 'user authenticated!', username: user.username, jwt: token});
+							var payload = {_id: foundUser._id, username: foundUser.username};
+							var token = jwt.sign(payload, jwtOptions.secretOrKey, {expiresIn:'4h'});
+							res.json({message: 'user authenticated!', username: foundUser.username, jwt: token});
 						} else {
-							winston.info('user not found');
+							logger.info('user not found');
 							res.status(401).json({message:'user not found'});
 						}
 					})
 					.catch(err => {
-						winston.error(err);
+						logger.error(err);
 						res.status(404).json({message:JSON.stringify(err)});
 					});
 			}
