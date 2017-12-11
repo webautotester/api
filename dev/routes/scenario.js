@@ -11,6 +11,7 @@ function init(serverNames, webServer, db, logger) {
 		.get('/',(req, res) => {
 			logger.info('call scenario');
 			var user = req.user;
+			logger.info(`user:${JSON.stringify(user)}`);
 			db.collection('scenario', {strict:true}, (err, scenarioCollection) => {
 				if (err) {
 					logger.info('Collection scenarion not created yet !');

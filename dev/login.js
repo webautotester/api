@@ -102,13 +102,6 @@ function init (serverNames, webServer, db, logger) {
 			}
 		});
 	});
-
-	webServer.get('/api/logout', (req, res)=> {
-		req.logOut();
-		req.session = null;
-		res.status(200).json({status: 'Success'});
-		//res.status(200).clearCookie('session', {path: '/'}).json({status: 'Success'});
-	});
 }
 
 module.exports.init = init;
