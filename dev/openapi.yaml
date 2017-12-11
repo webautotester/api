@@ -1,0 +1,171 @@
+openapi: "3.0.0"
+info:
+  title: WAT API
+  description: REST API to play with WAT objects
+  version: "1.0.0"
+  contact:
+    email: "blancxav@gmail.com"
+
+servers:
+- url: "http://wat.promyze.com/api"
+tags:
+- name: "scenario"
+  description: "A scenario is a validation test on a web site. it contains a sequence of actions performed on the web site"
+- name: "run"
+  description: "A run is a trace of a scenario executed by WAT"
+- name: "schedule"
+  description: "A scenario has to be scheduled for WAT to play it"
+
+
+paths:
+  /scenario:
+    get:
+      tags:
+      - "scenario"
+      summary: "returns the list of scenario"
+      operationId: "getScenario"
+      responses:
+        '200':
+          description: "sucess"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/scenario"
+        '404':
+          description: "Collection scenario not created yet !"
+          content:
+            application/json:
+              schema:
+                type: "string"
+        '500':
+          description: "Exception while requesting the database"
+          content:
+            application/json:
+              schema:
+                type: "string"
+    post:
+      tags:
+      - "scenario"
+      summary: "adds a new scenario"
+      requestBody:
+        required: true
+        content:
+          application/json
+            schema:
+              $ref: "#/components/schemas/scenario"
+      responses:
+        '200':
+          description: "sucess, scenario has been added"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/scenario"
+        '404':
+          description: "Collection scenario not created yet !"
+          content:
+            application/json:
+              schema:
+                type: "string"
+        '500':
+          description: "Exception while requesting the database"
+          content:
+            application/json:
+              schema:
+                type: "string"
+  /scenario/{sid}:
+    get:
+      tags:
+      - "scenario"
+      summary: "return the scenario with sid"
+      operationId: "getScenarioWithSID"
+      parameters:
+        - name: sid
+          in: path
+          description: scenario ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: "sucess"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/scenario"
+        '404':
+          description: "Collection scenario not created yet !"
+          content:
+            application/json:
+              schema:
+                type: "string"
+        '500':
+          description: "Exception while requesting the database"
+          content:
+            application/json:
+              schema:
+                type: "string"
+    delete:
+      tags:
+      - "scenario"
+      summary: "delete a scenario"
+      parameters:
+        - name: sid
+          in: path
+          description: scenario ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: "sucess the scenario has been deleted"
+        '404':
+          description: "Collection scenario not created yet !"
+          content:
+            application/json:
+              schema:
+                type: "string"
+        '500':
+          description: "Exception while requesting the database"
+          content:
+            application/json:
+              schema:
+                type: "string"
+  
+  /run:
+  
+      
+components:
+  schemas:
+    action:
+      properties:
+        type:
+          type: "string"
+        url:
+          type: "string"
+      required:
+        - type
+        - url
+    scenario:
+      properties:
+        _id:
+          type: "string"
+        wait:
+          type: "number"
+        uid:
+          type: "string"
+        actions:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/action"
+      required:
+        - actions
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - bearerAuth: []

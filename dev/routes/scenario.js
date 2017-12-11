@@ -10,11 +10,11 @@ function init(serverNames, webServer, db, logger) {
 	router
 		.get('/',(req, res) => {
 			logger.info('call scenario');
-			var user = req.user;
+			let user = req.user;
 			logger.info(`user:${JSON.stringify(user)}`);
 			db.collection('scenario', {strict:true}, (err, scenarioCollection) => {
 				if (err) {
-					logger.info('Collection scenarion not created yet !');
+					logger.info('Collection scenario not created yet !');
 					res.status(404).send(err).end();
 				} else {
 					scenarioCollection.find({uid:new ObjectID(user._id)}).toArray()
@@ -31,12 +31,13 @@ function init(serverNames, webServer, db, logger) {
 		})
 		.get('/:sid',(req, res) => {
 			logger.info('call scenario');
+			let user = req.user;
 			db.collection('scenario', {strict:true}, (err, scenarioCollection) => {
 				if (err) {
 					logger.info('Collection scenario not created yet !');
 					res.status(404).send(err).end();
 				} else {
-					scenarioCollection.find({_id:new ObjectID(req.params.sid)}).toArray()
+					scenarioCollection.find({_id:new ObjectID(req.params.sid), uid:new ObjectID(user._id)}).toArray()
 						.then(scenariosArray => {
 							logger.info(`RouteScenario: response to GET = ${scenariosArray}`);
 							res.status(200).send(scenariosArray).end();
@@ -51,7 +52,7 @@ function init(serverNames, webServer, db, logger) {
 
 	router
 		.post('/',(req, res) => {
-			var user = req.user;
+			let user = req.user;
 			db.collection('scenario', (err, scenarioCollection) => {
 				if (err) {
 					res.status(404).send(err).end();
@@ -82,12 +83,13 @@ function init(serverNames, webServer, db, logger) {
 	
 	router
 		.delete('/:sid',(req, res) => {
+			let user = req.user;
 			db.collection('scenario', {strict:true}, (err, scenarioCollection) => {
 				if (err) {
-					logger.info('Collection scenarion not created yet !');
+					logger.info('Collection scenario not created yet !');
 					res.status(404).send(err).end();
 				} else {
-					scenarioCollection.remove({_id:new ObjectID(req.params.sid)})
+					scenarioCollection.remove({_id:new ObjectID(req.params.sid), uid:new ObjectID(user._id)})
 						.then(() => {
 							logger.info('RouteScenario: response to Delete ');
 							res.status(200).send().end();

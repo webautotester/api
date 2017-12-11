@@ -9,14 +9,15 @@ function init (serverNames, webServer, db, logger) {
 	router
 		.get('/scenario/:sid', (req, res) => {
 			logger.info(`GET /run/${req.params.sid}`);
-			var sidID = new ObjectID(req.params.sid);
+			let user = req.user;
+			let sidID = new ObjectID(req.params.sid);
 			const N = 10;
 			db.collection('run', {strict:true}, (err, runCollection) => {
 				if (err) {
 					res.status(404).send(err).end();
 				} else {
 					logger.info(JSON.stringify(sidID));
-					var cursor = runCollection.find({sid:sidID, read:false});
+					var cursor = runCollection.find({sid:sidID, read:false, uid:new ObjectID(user._id)});
 					logger.info('Got Run Cursor');
 					cursor.count()
 						.then( count => {
@@ -36,15 +37,15 @@ function init (serverNames, webServer, db, logger) {
 				}
 			});
 		})
-		.get('/user/:uid', (req, res) => {
+		.get('/user', (req, res) => {
 			logger.info(`GET /run/${req.params.sid}`);
-			var uidID = new ObjectID(req.params.uid);
+			let user = req.user;
 			db.collection('run', {strict:true}, (err, runCollection) => {
 				if (err) {
 					res.status(404).send(err).end();
 				} else {
-					logger.info(JSON.stringify(sidID));
-					runCollection.find({uid:uidID, read:false}).toArray()
+					logger.info(JSON.stringify(user._id));
+					runCollection.find({uid:new ObjectID(user._id), read:false}).toArray()
 						.then(runsArray => {
 							res.status(200).send(runsArray).end();
 						})
@@ -57,12 +58,13 @@ function init (serverNames, webServer, db, logger) {
 
 	router
 		.delete('/:rid',(req, res) => {
+			let user = req.user;
 			db.collection('run', {strict:true}, (err, runCollection) => {
 				if (err) {
 					logger.info('Collection run not created yet !');
 					res.status(404).send(err).end();
 				} else {
-					runCollection.remove({_id:new ObjectID(req.params.rid)})
+					runCollection.remove({_id:new ObjectID(req.params.rid), uid:new ObjectID(user._id)})
 						.then(() => {
 							logger.info('RouteRun: response to Delete ');
 							res.status(200).send().end();
