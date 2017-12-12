@@ -1,8 +1,6 @@
 import axios from 'axios';
 
-//const BASE_URL = 'http://localhost:8080';
 const BASE_URL = location.protocol + '//' + location.hostname + (location.port ? ':'+location.port: '');
-//console.log(`BASE_URL : ${BASE_URL}`);
 
 export function getScenario() {
 	const url = `${BASE_URL}/api/scenario`;
@@ -70,8 +68,8 @@ export function getRunForScenario(sid) {
 	return get(url);
 }
 
-export function getRunForUser(uid) {
-	const url = `${BASE_URL}/api/run/user/${uid}`;
+export function getRunForUser() {
+	const url = `${BASE_URL}/api/run/user`;
 	return get(url);
 }
 

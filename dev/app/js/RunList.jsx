@@ -26,9 +26,7 @@ export default class ScenarioList extends React.Component {
 			loadedAtLeastOnce: true
 		});
 
-		var uid = sessionStorage.getItem('uid');
-		console.log(uid);
-		getRunForUser(uid)
+		getRunForUser()
 			.then(fetchedRuns => {
 				//console.log('fetched');
 				this.setState({
