@@ -23,7 +23,6 @@ paths:
       tags:
       - "scenario"
       summary: "returns the list of scenario"
-      operationId: "getScenario"
       responses:
         '200':
           description: "sucess"
@@ -52,7 +51,7 @@ paths:
       requestBody:
         required: true
         content:
-          application/json
+          application/json:
             schema:
               $ref: "#/components/schemas/scenario"
       responses:
@@ -79,7 +78,6 @@ paths:
       tags:
       - "scenario"
       summary: "return the scenario with sid"
-      operationId: "getScenarioWithSID"
       parameters:
         - name: sid
           in: path
@@ -132,9 +130,182 @@ paths:
             application/json:
               schema:
                 type: "string"
-  
-  /run:
-  
+  /run/{rid}:
+    delete:
+      tags:
+      - "run"
+      summary: "delete a run"
+      parameters:
+        - name: rid
+          in: path
+          description: run ID
+          required: true
+          schema:
+            type: "string"
+      responses:
+        '200':
+          description: "sucess the run has been deleted"
+        '500':
+          description: "Exception while requesting the database"
+          content:
+            application/json:
+              schema:
+                type: "string"
+  /run/scenario/{sid}:
+    get:
+      tags:
+      - "run"
+      summary: "return all the runs for the scenario with sid"
+      parameters:
+        - name: sid
+          in: path
+          description: scenario ID
+          required: true
+          schema:
+            type: "string"
+      responses:
+        '200':
+          description: "sucess"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/run"
+        '404':
+          description: "Collection run not created yet !"
+          content:
+            application/json:
+              schema:
+                type: "string"
+        '500':
+          description: "Exception while requesting the database"
+          content:
+            application/json:
+              schema:
+                type: "string"
+  /run/user:
+    get:
+      tags:
+      - "run"
+      summary: "return all the runs for a given user"
+      responses:
+        '200':
+          description: "sucess"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/run"
+        '404':
+          description: "Collection run not created yet !"
+          content:
+            application/json:
+              schema:
+                type: "string"
+        '500':
+          description: "Exception while requesting the database"
+          content:
+            application/json:
+              schema:
+                type: "string"
+  /schedule/playNow/{sid}:
+    get:
+      tags:
+      - "schedule"
+      summary: "Ask WAT to play a scenario as soon a possible"
+      parameters:
+        - name: sid
+          in: path
+          description: scenario ID
+          required: true
+          schema:
+            type: "string"
+      responses:
+        '200':
+          description: "sucess"
+          content:
+            application/json:
+              schema:
+                type: "string"
+        '500':
+          description: "Exception while requesting the database"
+          content:
+            application/json:
+              schema:
+                type: "string"
+  /schedule/schedule/{sid}:
+    get:
+      tags:
+      - "schedule"
+      summary: "Ask WAT to schedule a scenario"
+      parameters:
+        - name: sid
+          in: path
+          description: scenario ID
+          required: true
+          schema:
+            type: "string"
+      responses:
+        '200':
+          description: "sucess"
+          content:
+            application/json:
+              schema:
+                type: "string"
+        '500':
+          description: "Exception while requesting the database"
+          content:
+            application/json:
+              schema:
+                type: "string"
+  /schedule/unschedule/{sid}:
+    get:
+      tags:
+      - "schedule"
+      summary: "Ask WAT to unschedule a scenario"
+      parameters:
+        - name: sid
+          in: path
+          description: scenario ID
+          required: true
+          schema:
+            type: "string"
+      responses:
+        '200':
+          description: "sucess"
+          content:
+            application/json:
+              schema:
+                type: "string"
+        '500':
+          description: "Exception while requesting the database"
+          content:
+            application/json:
+              schema:
+                type: "string"
+  /schedule/isschedule/{sid}:
+    get:
+      tags:
+      - "schedule"
+      summary: "Ask WAT if a scenario is scheduled"
+      parameters:
+        - name: sid
+          in: path
+          description: scenario ID
+          required: true
+          schema:
+            type: "string"
+      responses:
+        '200':
+          description: "sucess"
+          content:
+            application/json:
+              schema:
+                type: "string"
+        '500':
+          description: "Exception while requesting the database"
+          content:
+            application/json:
+              schema:
+                type: "string"
       
 components:
   schemas:
@@ -161,6 +332,22 @@ components:
             $ref: "#/components/schemas/action"
       required:
         - actions
+    run:
+      properties:
+        _id:
+          type: "string"
+        sid:
+          type: "string"
+        uid:
+          type: "string"
+        isSuccess:
+          type: "boolean"
+        date:
+          type: "string"
+      required:
+        - sid
+        - uid
+        - isSuccess
   securitySchemes:
     bearerAuth:
       type: http
