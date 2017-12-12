@@ -16,7 +16,7 @@ export function getOneScenario(sid) {
 export function removeScenario(sid) {
 	const url = `${BASE_URL}/api/scenario/${sid}`;
 	return new Promise((resolve, reject) => {
-		axios.delete(url)
+		axios.delete(url,{headers: {'Authorization': `Bearer ${sessionStorage.getItem('jwt')}`}})
 			.then( response => {
 				//console.log(`Response to DELETE ${url} : ${response.data}`);
 				resolve(response.data);
@@ -31,7 +31,7 @@ export function removeScenario(sid) {
 export function removeRun(rid) {
 	const url = `${BASE_URL}/api/run/${rid}`;
 	return new Promise((resolve, reject) => {
-		axios.delete(url)
+		axios.delete(url, {headers: {'Authorization': `Bearer ${sessionStorage.getItem('jwt')}`}})
 			.then( response => {
 				//console.log(`Response to DELETE ${url} : ${response.data}`);
 				resolve(response.data);
