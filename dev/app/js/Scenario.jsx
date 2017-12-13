@@ -12,7 +12,7 @@ export default class Scenario extends React.Component {
 			scenario.wait = 0;
 		}
 		if (! scenario.cssselector) {
-			scenario.cssselector = 'watId';
+			scenario.cssselector = 'optimal';
 		}
 		if (! scenario.name) {
 			scenario.name = 'MyScenario';
