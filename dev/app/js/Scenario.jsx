@@ -252,6 +252,7 @@ export default class Scenario extends React.Component {
 								<option value="watId">WAT With Id</option>
 								<option value="watPath">WAT With Path</option>
 								<option value="optimal">Optimal Select</option>
+								<option value="css">CSS Generator</option>
 							</select>
 						</FormGroup>
 					</form>
