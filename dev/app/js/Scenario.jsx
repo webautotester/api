@@ -11,9 +11,6 @@ export default class Scenario extends React.Component {
 		if (! scenario.wait) {
 			scenario.wait = 0;
 		}
-		if (! scenario.cssselector) {
-			scenario.cssselector = 'optimal';
-		}
 		if (! scenario.name) {
 			scenario.name = 'MyScenario';
 		}
@@ -34,7 +31,6 @@ export default class Scenario extends React.Component {
 		//console.log(this.props.indice);
 		this.handleChangeName = this.handleChangeName.bind(this);
 		this.handleChangeWait = this.handleChangeWait.bind(this);
-		this.handleChangeCSSSelector = this.handleChangeCSSSelector.bind(this);
 		this.onClickSchedule = this.onClickSchedule.bind(this);
 		this.onClickPlayNow = this.onClickPlayNow.bind(this);
 		this.onClickRemoveScenario = this.onClickRemoveScenario.bind(this);
@@ -82,27 +78,6 @@ export default class Scenario extends React.Component {
 		//console.log(wait);
 		var newScenario = this.state.scenario;
 		newScenario.wait = wait;
-		pushScenario(newScenario)
-			.then( (response) => {
-				//console.log(`pushScenario: ${response}`);
-				this.setState( () => {
-					return {
-						scenario: newScenario
-					};
-				});
-			})
-			.catch( (err) => {
-				//console.log(`pushScenario error: ${err}`);
-			});
-	}
-
-	handleChangeCSSSelector(event) {
-		//event.preventDefault();
-		const cssSelectorControlId = `cssselector${this.state.scenario._id}`;
-		var cssselector = document.getElementById(cssSelectorControlId).value;
-		console.log(cssselector);
-		var newScenario = this.state.scenario;
-		newScenario.cssselector = cssselector;
 		pushScenario(newScenario)
 			.then( (response) => {
 				//console.log(`pushScenario: ${response}`);
@@ -224,7 +199,6 @@ export default class Scenario extends React.Component {
 
 		const head = `${this.props.indice} - ${this.state.scenario.actions[0].url}`;
 		const waitControlId = `wait${this.state.scenario._id}`;
-		const cssSelectorControlId = `cssselector${this.state.scenario._id}`;
 		const nameControlId = `name${this.state.scenario._id}`;
 		const assertEndId = `end${this.state.scenario._id}`;
 		const assertSelectorId = `selector${this.state.scenario._id}`;
@@ -243,17 +217,6 @@ export default class Scenario extends React.Component {
 						<FormGroup >
 							<ControlLabel>Run Step Wait Time in ms (1000 is recommended )</ControlLabel>
 							<FormControl id={waitControlId} type="number" defaultValue={this.state.scenario.wait} onChange={this.handleChangeWait}/>
-						</FormGroup>
-						<FormGroup >
-							<ControlLabel>CSS Selector Used By WAT For Running The Scenario (Choose The One That Makes Your Runs Passing)</ControlLabel>
-							<select id={cssSelectorControlId} 
-								defaultValue={this.state.scenario.cssselector} 
-								onChange={this.handleChangeCSSSelector}>
-								<option value="watId">WAT With Id</option>
-								<option value="watPath">WAT With Path</option>
-								<option value="optimal">Optimal Select</option>
-								<option value="css">CSS Generator</option>
-							</select>
 						</FormGroup>
 					</form>
 				</Col>
