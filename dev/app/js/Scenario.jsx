@@ -30,7 +30,6 @@ export default class Scenario extends React.Component {
 		};
 		//console.log(this.props.indice);
 		this.handleChangeName = this.handleChangeName.bind(this);
-		this.handleChangeWait = this.handleChangeWait.bind(this);
 		this.onClickSchedule = this.onClickSchedule.bind(this);
 		this.onClickPlayNow = this.onClickPlayNow.bind(this);
 		this.onClickRemoveScenario = this.onClickRemoveScenario.bind(this);
@@ -68,28 +67,6 @@ export default class Scenario extends React.Component {
 
 	componentWillUnmount () {
 		clearInterval(this.state.intervalId);
-	}
-
-
-	handleChangeWait(event) {
-		event.preventDefault();
-		const waitControlId = `wait${this.state.scenario._id}`;
-		var wait = document.getElementById(waitControlId).value;
-		//console.log(wait);
-		var newScenario = this.state.scenario;
-		newScenario.wait = wait;
-		pushScenario(newScenario)
-			.then( (response) => {
-				//console.log(`pushScenario: ${response}`);
-				this.setState( () => {
-					return {
-						scenario: newScenario
-					};
-				});
-			})
-			.catch( (err) => {
-				//console.log(`pushScenario error: ${err}`);
-			});
 	}
 
 
@@ -198,7 +175,6 @@ export default class Scenario extends React.Component {
 		delete divProps.scenario;
 
 		const head = `${this.props.indice} - ${this.state.scenario.actions[0].url}`;
-		const waitControlId = `wait${this.state.scenario._id}`;
 		const nameControlId = `name${this.state.scenario._id}`;
 		const assertEndId = `end${this.state.scenario._id}`;
 		const assertSelectorId = `selector${this.state.scenario._id}`;
@@ -213,10 +189,6 @@ export default class Scenario extends React.Component {
 						<FormGroup >
 							<ControlLabel>Name or Intent of the Scenario </ControlLabel>
 							<FormControl id={nameControlId} type="text" defaultValue={this.state.scenario.name} onChange={this.handleChangeName}/>
-						</FormGroup>
-						<FormGroup >
-							<ControlLabel>Run Step Wait Time in ms (1000 is recommended )</ControlLabel>
-							<FormControl id={waitControlId} type="number" defaultValue={this.state.scenario.wait} onChange={this.handleChangeWait}/>
 						</FormGroup>
 					</form>
 				</Col>
@@ -234,7 +206,7 @@ export default class Scenario extends React.Component {
       						The scenario just runs until the end
 						</Checkbox>
 						<FormGroup >
-							<ControlLabel>Tested HTML Element CSS ID </ControlLabel>
+							<ControlLabel>CSS Selector Of The Element Target Of The Assert </ControlLabel>
 							<FormControl id={assertSelectorId} type="text" defaultValue={this.state.scenario.assert.selector} readOnly={this.state.scenario.assert.end} onChange={this.handleChangeAssert}/>
 						</FormGroup>
 						<FormGroup >
