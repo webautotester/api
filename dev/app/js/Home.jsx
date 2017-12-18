@@ -17,7 +17,7 @@ export default class Home extends React.Component {
 			<div>
 				<Row>
 					<Jumbotron><h1>WAT</h1>
-						<h2 className="page-subtitle">The Web Automatic Tester</h2>
+						<h2 className="page-subtitle">The Web Automatic Tester (Based on <a href="http://www.nightmarejs.org/">NightmareJS</a>)</h2>
 						<Label className="label-danger-orange">Beta test edition</Label>
 					</Jumbotron>
 				</Row>
