@@ -8,44 +8,12 @@ RUN curl -o /usr/local/bin/n https://raw.githubusercontent.com/visionmedia/n/mas
 RUN chmod +x /usr/local/bin/n
 RUN n latest
 
-RUN mkdir /tmp/front
-WORKDIR /tmp/front
+RUN mkdir /tmp/api
+WORKDIR /tmp/api
 
-RUN mkdir dev
-COPY dev/*.js dev/
-
-RUN mkdir dev/app
-COPY dev/app/*.html dev/app/
-
-RUN mkdir dev/app/js
-COPY dev/app/js/*.js dev/app/js/
-COPY dev/app/js/*.jsx dev/app/js/
-
-RUN mkdir dev/app/img
-COPY dev/app/img/*.png dev/app/img/
-COPY dev/app/img/*.svg dev/app/img/
-
-RUN mkdir dev/app/style
-COPY dev/app/style/*.less dev/app/style
-
-RUN mkdir dev/routes
-COPY dev/routes/*.js dev/routes/
-
-RUN mkdir webpack
-COPY webpack/base.config.js webpack/
-COPY webpack/prod.config.js webpack/
-
-COPY .babelrc .
-COPY package.json .
-
+COPY . .
 
 RUN npm install
-RUN npm run prod
-
-COPY dev/app/img/demo.mp4 ops/app/img/
-
-WORKDIR /tmp/front/ops
-RUN mkdir app/img/screen
 
 EXPOSE 80
 
