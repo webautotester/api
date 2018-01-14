@@ -90,6 +90,7 @@ function init (serverNames, webServer, db, logger) {
 		winston.info('signup');
 		db.collection('user', (err, userCollection) => {
 			if (err) {
+				winston.error(err);
 				res.status(404).send(err).end();
 			} else {
 				let newUser = {
