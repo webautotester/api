@@ -96,8 +96,8 @@ function init (serverNames, webServer, db, logger) {
 				let newUser = {
 					_id : ObjectID(),
 					username : req.body.username,
-					salt : crypto.randomBytes(256).toString('hex'),
-					hash : sha256(req.body.password+salt)
+					//salt : crypto.randomBytes(256).toString('hex'),
+					//hash : sha256(req.body.password+salt)
 				};
 				userCollection.findOne({username: newUser.username})
 					.then( (user) => {
