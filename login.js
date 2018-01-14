@@ -3,8 +3,12 @@ const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const passportJWT = require('passport-jwt');
 
+const crypto = require('crypto');
+const sha256 = require('js-sha256');
+
 const ExtractJwt = passportJWT.ExtractJwt;
 const JwtStrategy = passportJWT.Strategy;
+
 
 
 
@@ -45,24 +49,22 @@ function init (serverNames, webServer, db, logger) {
 	passport.use(strategy);
     
 	webServer.post('/api/login', (req, res) => {
-		var user = {
-			username : req.body.username,
-			password : req.body.password
-		};
+		let username = req.body.username;
+		let password = req.body.password;
 		db.collection('user', (err, userCollection) => {
 			if (err) {
 				logger.error(err);
 				res.status(404).json({message:JSON.stringify(err)});
 			} else {
-				userCollection.findOne(user)
+				userCollection.findOne({username : username})
 					.then( foundUser => {
-						if (foundUser) {
+						if (checkAuthentication(foundUser, username, password)) {
 							var payload = {_id: foundUser._id, username: foundUser.username};
 							var token = jwt.sign(payload, jwtOptions.secretOrKey, {expiresIn:'4h'});
 							res.json({message: 'user authenticated!', username: foundUser.username, jwt: token});
 						} else {
-							logger.info('user not found');
-							res.status(401).json({message:'user not found'});
+							logger.info('wrong username / password');
+							res.status(401).json({message:'wrong username / password'});
 						}
 					})
 					.catch(err => {
@@ -73,15 +75,25 @@ function init (serverNames, webServer, db, logger) {
 		});
 	});
 
-	webServer.post('/api/signin', (req, res) => {
+	function checkAuthentication(user, username, password) {
+		if (user.username !== username) return false;
+
+		hash = sha256(password+user.salt);
+		if (user.hash !== hash) return false;
+
+		return true;
+	}
+
+	webServer.post('/api/signup', (req, res) => { 
 		db.collection('user', (err, userCollection) => {
 			if (err) {
 				res.status(404).send(err).end();
 			} else {
-				var newUser = {
+				let newUser = {
+					_id : ObjectID(),
 					username : req.body.username,
-					password : req.body.password,
-					_id : ObjectID()
+					salt : crypto.randomBytes(256).toString('hex'),
+					hash : sha256(req.body.password+salt)
 				};
 				userCollection.findOne({username: newUser.username})
 					.then( (user) => {
@@ -90,7 +102,7 @@ function init (serverNames, webServer, db, logger) {
 							res.status(HTTP_CONFLIT).send(user).end();
 						} else {
 							userCollection.save(newUser).then(savedUser => {
-								res.send(savedUser).end();
+								res.send({id:savedUser._id, username:savedUser.username}).end();
 							}).catch(err => {
 								res.status(500).send(err).end();
 							});
