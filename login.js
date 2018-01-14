@@ -6,6 +6,8 @@ const passportJWT = require('passport-jwt');
 const crypto = require('crypto');
 const sha256 = require('js-sha256');
 
+const winston = require('winston');
+
 const ExtractJwt = passportJWT.ExtractJwt;
 const JwtStrategy = passportJWT.Strategy;
 
@@ -85,6 +87,7 @@ function init (serverNames, webServer, db, logger) {
 	}
 
 	webServer.post('/api/signup', (req, res) => { 
+		winston.info('signup');
 		db.collection('user', (err, userCollection) => {
 			if (err) {
 				res.status(404).send(err).end();
