@@ -93,11 +93,14 @@ function init (serverNames, webServer, db, logger) {
 				winston.error(err);
 				res.status(404).send(err).end();
 			} else {
+				let salt = crypto.randomBytes(256).toString('hex');
+				let saltPassword = req.body.password + salt;
+				let hash = sha256(saltPassword);
 				let newUser = {
 					_id : ObjectID(),
 					username : req.body.username,
-					//salt : crypto.randomBytes(256).toString('hex'),
-					//hash : sha256(req.body.password+salt)
+					salt : salt,
+					hash : hash
 				};
 				userCollection.findOne({username: newUser.username})
 					.then( (user) => {
