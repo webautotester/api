@@ -87,10 +87,10 @@ function init (serverNames, webServer, db, logger) {
 	}
 
 	webServer.post('/api/signup', (req, res) => { 
-		winston.info('signup');
+		//winston.info('signup');
 		db.collection('user', (err, userCollection) => {
 			if (err) {
-				winston.error(err);
+				//winston.error(err);
 				res.status(404).send(err).end();
 			} else {
 				let salt = crypto.randomBytes(256).toString('hex');
