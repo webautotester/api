@@ -1,5 +1,5 @@
 FROM ubuntu
-MAINTAINER Xavier Blanc <blancxav@gmail.com>
+LABEL maintainer="Xavier Blanc <blancxav@gmail.com>"
 
 # Install node
 RUN apt-get update -y \
