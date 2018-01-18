@@ -20,9 +20,19 @@ const ObjectID = require('mongodb').ObjectID;
 function init (serverNames, webServer, db, logger) {
 	webServer.use(passport.initialize());
 
+	setJWTStrategy(serverNames, webServer, db, logger);
+	setJWTRoute(serverNames, webServer, db, logger);
+
+	if (process.env.NODE_ENV === "PROD") {
+		setGitHubOAuthStrategy(serverNames, webServer, db, logger);
+		setGitHubOAuthRoute(serverNames, webServer, db, logger);
+	}
+}
+
+function setJWTStrategy(serverNames, webServer, db, logger) {
 	let jwtOptions = {};
 	jwtOptions.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
-	jwtOptions.secretOrKey = 'watSecretKeyIsVeryVerySecret';
+	jwtOptions.secretOrKey = process.env.JWT_SECRET;
 
 	var strategy = new JwtStrategy(jwtOptions,
 		(jwtPayload, done) => {
@@ -50,7 +60,9 @@ function init (serverNames, webServer, db, logger) {
 		});
 	
 	passport.use(strategy);
-    
+}
+
+function setJWTRoute(serverNames, webServer, db, logger) {
 	webServer.post('/api/login', (req, res) => {
 		let username = req.body.username;
 		let password = req.body.password;
@@ -123,85 +135,82 @@ function init (serverNames, webServer, db, logger) {
 			}
 		});
 	});
+}
 
-	if (process.env.NODE_ENV === "PROD") {
+function setGitHubOAuthStrategy(serverNames, webServer, db, logger) {
+	let gitHubStrategyOptions = {};
+	gitHubStrategyOptions.clientID = process.env.GITHUB_CLIENT_ID;
+	gitHubStrategyOptions.clientSecret = process.env.GITHUB_CLIENT_SECRET;
+	gitHubStrategyOptions.callbackURL =  "https://wat.promyze.com/api/github/callback";
 
-		let gitHubStrategyOptions = {};
-		gitHubStrategyOptions.clientID = process.env.GITHUB_CLIENT_ID;
-		gitHubStrategyOptions.clientSecret = process.env.GITHUB_CLIENT_SECRET;
-		gitHubStrategyOptions.callbackURL =  "https://wat.promyze.com/api/github/callback";
-
-		logger.info("PROD");
-		logger.info(JSON.stringify(gitHubStrategyOptions));
-
-		let gitHubStrategy = new GitHubStrategy(gitHubStrategyOptions,
-			(accessToken, refreshToken, profile, done) => {
-				db.collection('user', (err, userCollection) => {
-					if (err) {
-						//winston.error(err);
-						return done(err, null);
-					} else {
-						let newUser = {
-							type : 'github',
-							accessToken : accessToken,
-							refreshToken : refreshToken,
-							gitHubID : profile.id,
-							gitHubEmail : profile.email
-						};
-						userCollection.findOne({type: 'github', gitHubID: newUser.gitHubID})
-							.then( (user) => {
-								if (user) {
-									newUser._id = user._id;
-									userCollection.save(newUser)
-									.then(savedUser => {
-										done(null,newUser);
-									})
-									.catch(err => {
-										done(err,null);
-									});
-								} else {
-									newUser._id = ObjectID();
-									userCollection.save(newUser)
-									.then(savedUser => {
-										done(null,newUser);
-									})
-									.catch(err => {
-										done(err,null);
-									});
-								}
-							})
-							.catch( (err) => {
-								done(err,null);
-							});
-					}
-				})
-			});
-
-		passport.use(gitHubStrategy);
-
-
-		webServer.get('/api/github', passport.authenticate('github', { scope: [ 'user:email' ] }));
-
-		webServer.get(
-			'/api/github/callback',
-			passport.authenticate('github', { failureRedirect: '/login' }),
-			function(req, res) {
-				// Successful authentication, redirect home.
-				res.redirect('/');
-			}
-		);
-
-		passport.serializeUser(function(user, done) {
-			done(null, user);
+	let gitHubStrategy = new GitHubStrategy(gitHubStrategyOptions,
+		(accessToken, refreshToken, profile, done) => {
+			db.collection('user', (err, userCollection) => {
+				if (err) {
+					//winston.error(err);
+					return done(err, null);
+				} else {
+					let newUser = {
+						type : 'github',
+						accessToken : accessToken,
+						refreshToken : refreshToken,
+						gitHubID : profile.id,
+						gitHubEmail : profile.email
+					};
+					userCollection.findOne({type: 'github', gitHubID: newUser.gitHubID})
+						.then( (user) => {
+							if (user) {
+								newUser._id = user._id;
+								userCollection.save(newUser)
+								.then(savedUser => {
+									done(null,newUser);
+								})
+								.catch(err => {
+									done(err,null);
+								});
+							} else {
+								newUser._id = ObjectID();
+								userCollection.save(newUser)
+								.then(savedUser => {
+									done(null,newUser);
+								})
+								.catch(err => {
+									done(err,null);
+								});
+							}
+						})
+						.catch( (err) => {
+							done(err,null);
+						});
+				}
+			})
 		});
-		  
-		passport.deserializeUser(function(obj, done) {
-			done(null, obj);
-		});
-		
-	} else {
-		logger.info("DEBUG mode !");
-	}
+
+	passport.use(gitHubStrategy);
+
+	passport.serializeUser(function(user, done) {
+		done(null, user);
+	});
+	  
+	passport.deserializeUser(function(obj, done) {
+		done(null, obj);
+	});
+}
+
+function setGitHubOAuthRoute(serverNames, webServer, db, logger  ) {
+	webServer.get('/api/github', passport.authenticate('github', { scope: [ 'user:email' ] }));
+
+	webServer.get(
+		'/api/github/callback',
+		passport.authenticate('github', { failureRedirect: '/login' }),
+		function(req, res) {
+			// Successful authentication, redirect home.
+			let username = req.user.username;
+			var payload = {username: username};
+			var token = jwt.sign(payload, process.env.JWT_SECRET, {expiresIn:'4h'});
+			res.json({message: 'user authenticated!', username: foundUser.username, jwt: token});
+		}
+	);
 }
 
 module.exports.init = init;
