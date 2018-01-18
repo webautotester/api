@@ -190,6 +190,15 @@ function init (serverNames, webServer, db, logger) {
 				res.redirect('/');
 			}
 		);
+
+		passport.serializeUser(function(user, done) {
+			done(null, user);
+		});
+		  
+		passport.deserializeUser(function(obj, done) {
+			done(null, obj);
+		});
+		
 	} else {
 		logger.info("DEBUG mode !");
 	}
