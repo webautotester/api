@@ -11,6 +11,7 @@ const winston = require('winston');
 const ExtractJwt = passportJWT.ExtractJwt;
 const JwtStrategy = passportJWT.Strategy;
 
+const GitHubStrategy = require('passport-github2').Strategy;
 
 
 
