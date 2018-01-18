@@ -205,6 +205,7 @@ function setGitHubOAuthRoute(serverNames, webServer, db, logger  ) {
 		passport.authenticate('github', { failureRedirect: '/login' }),
 		function(req, res) {
 			// Successful authentication, redirect home.
+			logger.info(`authenticated:${JSON.stringify(req.user)}`)
 			let username = req.user.username;
 			var payload = {username: username};
 			var token = jwt.sign(payload, process.env.JWT_SECRET, {expiresIn:'4h'});
