@@ -208,7 +208,7 @@ function setGitHubOAuthRoute(serverNames, webServer, db, logger  ) {
 			let username = req.user.username;
 			var payload = {username: username};
 			var token = jwt.sign(payload, process.env.JWT_SECRET, {expiresIn:'4h'});
-			res.json({message: 'user authenticated!', username: foundUser.username, jwt: token});
+			res.json({message: 'user authenticated!', username: username, jwt: token});
 		}
 	);
 }
