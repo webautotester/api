@@ -134,7 +134,7 @@ function init (serverNames, webServer, db, logger) {
 		logger.info("PROD");
 		logger.info(JSON.stringify(gitHubStrategyOptions));
 
-		/*let gitHubStrategy = new GitHubStrategy(gitHubStrategyOptions,
+		let gitHubStrategy = new GitHubStrategy(gitHubStrategyOptions,
 			(accessToken, refreshToken, profile, done) => {
 				db.collection('user', (err, userCollection) => {
 					if (err) {
@@ -189,7 +189,7 @@ function init (serverNames, webServer, db, logger) {
 				// Successful authentication, redirect home.
 				res.redirect('/');
 			}
-		);*/
+		);
 	} else {
 		logger.info("DEBUG mode !");
 	}
