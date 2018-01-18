@@ -132,6 +132,7 @@ function init (serverNames, webServer, db, logger) {
 
 		logger.info("PROD");
 		logger.info(JSON.stringify(gitHubStrategyOptions));
+		logger.info(process.env.GITHUB_CLIENT_ID);
 
 		/*let gitHubStrategy = new GitHubStrategy(gitHubStrategyOptions,
 			(accessToken, refreshToken, profile, done) => {
