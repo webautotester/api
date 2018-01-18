@@ -125,13 +125,12 @@ function init (serverNames, webServer, db, logger) {
 
 	if (process.env.NODE_ENV === "PROD") {
 
-		let gitHubStrategyOptions = "test";
-		//gitHubStrategyOptions.clientID = process.env.GITHUB_CLIENT_ID;
-		//gitHubStrategyOptions.clientSecret = process.env.GITHUB_CLIENT_SECRET;
-		//gitHubStrategyOptions.callbackURL =  "https://wat.promyze.com/api/github/callback";
+		let gitHubStrategyOptions = {};
+		gitHubStrategyOptions.clientID = process.env.GITHUB_CLIENT_ID;
+		gitHubStrategyOptions.clientSecret = process.env.GITHUB_CLIENT_SECRET;
+		gitHubStrategyOptions.callbackURL =  "https://wat.promyze.com/api/github/callback";
 
 		logger.info("PROD");
-		logger.info(JSON.stringify(gitHubStrategyOptions));
 		logger.info(process.env.GITHUB_CLIENT_ID);
 
 		/*let gitHubStrategy = new GitHubStrategy(gitHubStrategyOptions,
