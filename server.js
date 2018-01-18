@@ -65,6 +65,7 @@ function initRoutes() {
 			});
 		})
 		.catch((err) => {
+			logger.info('Erreur connecting DB');
 			logger.info(err);
 			setTimeout(() => {
 				initRoutes();
