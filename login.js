@@ -157,7 +157,7 @@ function setGitHubOAuthStrategy(serverNames, webServer, db, logger) {
 						gitHubID : profile.id,
 						gitHubEmail : profile.email
 					};
-					logger.info(`GitHub:${JSON.stringify(profile)}`);
+					//logger.info(`GitHub:${JSON.stringify(profile)}`);
 					userCollection.findOne({type: 'github', gitHubID: newUser.gitHubID})
 						.then( (user) => {
 							if (user) {
