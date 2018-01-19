@@ -152,6 +152,7 @@ function setGitHubOAuthStrategy(serverNames, webServer, db, logger) {
 
 	let gitHubStrategy = new GitHubStrategy(gitHubStrategyOptions,
 		(accessToken, refreshToken, profile, done) => {
+			logger.info(`GitHubOAuth Callback : ${JSON.stringify(profile)}`);
 			db.collection('user', (err, userCollection) => {
 				if (err) {
 					//winston.error(err);
