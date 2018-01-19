@@ -170,23 +170,16 @@ function setGitHubOAuthStrategy(serverNames, webServer, db, logger) {
 						.then( (user) => {
 							if (user) {
 								newUser._id = user._id;
-								userCollection.save(newUser)
-								.then(savedUser => {
-									done(null,newUser);
-								})
-								.catch(err => {
-									done(err,null);
-								});
 							} else {
 								newUser._id = ObjectID();
-								userCollection.save(newUser)
-								.then(savedUser => {
-									done(null,newUser);
-								})
-								.catch(err => {
-									done(err,null);
-								});
 							}
+							userCollection.save(newUser)
+							.then(savedUser => {
+								done(null,newUser);
+							})
+							.catch(err => {
+								done(err,null);
+							});
 						})
 						.catch( (err) => {
 							done(err,null);
