@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 
 const passport = require('passport');
 const passportJWT = require('passport-jwt');
+const session = require('express-session');
 
 const crypto = require('crypto');
 const sha256 = require('js-sha256');
@@ -18,7 +19,13 @@ const GitHubStrategy = require('passport-github2').Strategy;
 const ObjectID = require('mongodb').ObjectID;
 
 function init (serverNames, webServer, db, logger) {
+	if (process.env.NODE_ENV === "PROD") {
+		webServer.use(session({secret:process.env.SESSION_KEY, resave: false, saveUninitialized: false}));
+	}
 	webServer.use(passport.initialize());
+	if (process.env.NODE_ENV === "PROD") {
+		webServer.use(passport.session());
+	}
 
 	setJWTStrategy(serverNames, webServer, db, logger);
 	setJWTRoute(serverNames, webServer, db, logger);
@@ -206,20 +213,22 @@ function setGitHubOAuthRoute(serverNames, webServer, db, logger  ) {
 		passport.authenticate('github', { failureRedirect: '/login' }),
 		function(req, res) {
 			res.status(302).location('/github');
-			res.end();
 			// Successful authentication, redirect home.
 		}
 	);
 
 	webServer.get(
 		'/api/github/jwt',
-		passport.authenticate('github'),
 		(req, res) => {
-			logger.info(`authenticated:${JSON.stringify(req.user)}`);
-			let username = req.user.username;
-			let payload = {username: username};
-			let token = jwt.sign(payload, process.env.JWT_SECRET, {expiresIn:'4h'});
-			res.json({message: 'user authenticated!', username: username, jwt: token});
+			if (req.isAuthenticated()) {
+				logger.info(`authenticated:${JSON.stringify(req.user)}`);
+				let username = req.user.username;
+				let payload = {username: username};
+				let token = jwt.sign(payload, process.env.JWT_SECRET, {expiresIn:'4h'});
+				res.json({message: 'user authenticated!', username: username, jwt: token});
+			} else {
+				res.status(401).json({message:'wrong username / password'});
+			}
 		}
 	);
 }
