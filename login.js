@@ -49,7 +49,7 @@ function setJWTStrategy(serverNames, webServer, db, logger) {
 					logger.error(err);
 					return done(err);
 				} else {
-					userCollection.findOne({_id:new ObjectID(jwtPayload._id)})
+					userCollection.findOne({username:jwtPayload.username})
 						.then( foundUser => {
 							if (foundUser) {
 								return done(null, foundUser);
@@ -81,7 +81,7 @@ function setJWTRoute(serverNames, webServer, db, logger) {
 				userCollection.findOne({type : 'wat', username : username})
 					.then( foundUser => {
 						if (checkAuthentication(foundUser, username, password)) {
-							var payload = {_id: foundUser._id, username: foundUser.username};
+							var payload = {username: foundUser.username};
 							var token = jwt.sign(payload, jwtOptions.secretOrKey, {expiresIn:'4h'});
 							res.json({message: 'user authenticated!', username: foundUser.username, jwt: token});
 						} else {
