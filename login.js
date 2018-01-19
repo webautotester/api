@@ -213,16 +213,13 @@ function setGitHubOAuthRoute(serverNames, webServer, db, logger  ) {
 
 	webServer.get(
 		'/api/github/jwt',
+		passport.authenticate('github'),
 		(req, res) => {
-			if (req.isAuthenticated()) {
-				logger.info(`authenticated:${JSON.stringify(req.user)}`);
-				let username = req.user.username;
-				let payload = {username: username};
-				let token = jwt.sign(payload, process.env.JWT_SECRET, {expiresIn:'4h'});
-				res.json({message: 'user authenticated!', username: username, jwt: token});
-			} else {
-				res.status(401).json({message:'wrong username / password'});
-			}
+			logger.info(`authenticated:${JSON.stringify(req.user)}`);
+			let username = req.user.username;
+			let payload = {username: username};
+			let token = jwt.sign(payload, process.env.JWT_SECRET, {expiresIn:'4h'});
+			res.json({message: 'user authenticated!', username: username, jwt: token});
 		}
 	);
 }
