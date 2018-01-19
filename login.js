@@ -165,7 +165,7 @@ function setGitHubOAuthStrategy(serverNames, webServer, db, logger) {
 						gitHubID : profile.id,
 						username : profile.username
 					};
-					logger.info(`GitHub:${JSON.stringify(profile)}`);
+					logger.info(`GitHub New User ? ${JSON.stringify(newUser)}`);
 					userCollection.findOne({type: 'github', gitHubID: newUser.gitHubID})
 						.then( (user) => {
 							if (user) {
@@ -214,6 +214,7 @@ function setGitHubOAuthRoute(serverNames, webServer, db, logger  ) {
 		passport.authenticate('github', { failureRedirect: '/login' }),
 		function(req, res) {
 			res.status(302).location('/github');
+			res.end();
 			// Successful authentication, redirect home.
 		}
 	);
