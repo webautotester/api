@@ -205,7 +205,7 @@ function setGitHubOAuthRoute(serverNames, webServer, db, logger  ) {
 		'/api/github/callback',
 		passport.authenticate('github', { failureRedirect: '/login' }),
 		function(req, res) {
-			res.location('/github');
+			res.status(302).location('/github');
 			res.end();
 			// Successful authentication, redirect home.
 		}
@@ -219,7 +219,7 @@ function setGitHubOAuthRoute(serverNames, webServer, db, logger  ) {
 				let username = req.user.username;
 				let payload = {username: username};
 				let token = jwt.sign(payload, process.env.JWT_SECRET, {expiresIn:'4h'});
-				res.status(302).json({message: 'user authenticated!', username: username, jwt: token});
+				res.json({message: 'user authenticated!', username: username, jwt: token});
 			} else {
 				res.status(401).json({message:'wrong username / password'});
 			}
