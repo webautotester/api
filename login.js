@@ -224,10 +224,10 @@ function setGitHubOAuthRoute(serverNames, webServer, db, logger  ) {
 			let code = req.body.code;
 			logger.info(`code:${code}`);
 			getGitHubAccessToken(code, logger)
-				.then( accessToken => {
-					newUser.accessToken = accessToken;
-					logger.info(`accessToker:${accessToken}`);
-					return getGitHubUser(accessToken);;
+				.then( token => {
+					newUser.accessToken = token.access_token;
+					logger.info(`accessToken:${newUser.accessToken}`);
+					return getGitHubUser(newUser.accessToken, logger);;
 				})
 				.then( gitHubProfile => {
 					newUser.gitHubID = gitHubProfile.gitHubID;
@@ -280,7 +280,6 @@ function getGitHubAccessToken(code, logger) {
 	logger.info(JSON.stringify(parameters));
 	return axios.post(url, parameters, {headers: {'accept': 'application/json'}})
 		.then( response => {
-			logger.info('axios ok');
 			logger.info(JSON.stringify(response.data));
 			if (response.data.access_token) {
 				resolve(response.data.access_token);
@@ -290,10 +289,11 @@ function getGitHubAccessToken(code, logger) {
 		});
 }
 
-function getGitHubUser(accessToken) {
+function getGitHubUser(accessToken, logger) {
 	const url = 'https://api.github.com/user';
 	return axios.get(url, {headers: {'Authorization': `token ${accessToken}`}})
 		.then( response => {
+			logger.info(JSON.stringify(response.data));
 			if (response.data.login && response.data.id) {
 				resolve({username: response.data.login, gitHubID: response.data.id});
 			} else {
