@@ -222,24 +222,29 @@ function setGitHubOAuthRoute(serverNames, webServer, db, logger  ) {
 				type : 'github',
 			};
 			let code = req.body.code;
+			logger.info(`code:${code}`);
 			getGitHubAccessToken(code)
 				.then( accessToken => {
 					newUser.accessToken = accessToken;
+					logger.info(`accessToker:${accessToken}`);
 					return getGitHubUser(accessToken);;
 				})
 				.then( gitHubProfile => {
 					newUser.gitHubID = gitHubProfile.gitHubID;
 					newUser.username = gitHubProfile.username;
+					logger.info(`profile:${JSON.stringify(gitHubProfile)}`);
 					return db.collection('user');
 				})
 				.then( userCollection => {
 					return saveOrUpdateGitHubUser(userCollection);
 				})
 				.then ( saveUser => {
+					logger.info(`save:${JSON.stringify(saveUser)}`);
 					let token = createJWT(saveUser.username);
 					res.json({message: 'user authenticated!', username: saveUser.username, jwt: token});
 				})
 				.catch(err => {
+					logger.info(`err:${JSON.stringify(err)}`);
 					res.status(401).json({message:'wrong GitHub authentication'});
 				})
 		}
@@ -273,7 +278,7 @@ function getGitHubAccessToken(code) {
 			client_secret : process.env.PLUGIN_CLIENT_SECRET,
 			code : code
 		}
-		axios.post(url, parameters, {headers: {'accept': 'application/json'}})
+		return axios.post(url, parameters, {headers: {'accept': 'application/json'}})
 			.then( response => {
 				if (response.data.access_token) {
 					resolve(response.data.access_token);
