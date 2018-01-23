@@ -240,8 +240,8 @@ function setGitHubOAuthRoute(serverNames, webServer, db, logger  ) {
 				})
 				.then ( saveUser => {
 					logger.info(`save:${JSON.stringify(saveUser)}`);
-					let token = createJWT(saveUser.username);
-					res.json({message: 'user authenticated!', username: saveUser.username, jwt: token});
+					let token = createJWT(newUser.username);
+					res.json({message: 'user authenticated!', username: newUser.username, jwt: token});
 				})
 				.catch(err => {
 					logger.info(`err:${JSON.stringify(err)}`);
