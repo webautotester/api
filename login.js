@@ -281,7 +281,7 @@ function getGitHubAccessToken(code, logger) {
 	return axios.post(url, parameters, {headers: {'accept': 'application/json'}})
 		.then( response => {
 			logger.info('axios ok');
-			logger.info(JSON.stringify(response));
+			logger.info(JSON.stringify(response.data));
 			/*if (response.data.access_token) {
 				resolve(response.data.access_token);
 			} else {
