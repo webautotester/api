@@ -280,16 +280,14 @@ function getGitHubAccessToken(code, logger) {
 	logger.info(JSON.stringify(parameters));
 	return axios.post(url, parameters, {headers: {'accept': 'application/json'}})
 		.then( response => {
+			logger.info('axios ok');
 			logger.info(JSON.stringify(response));
-			if (response.data.access_token) {
+			/*if (response.data.access_token) {
 				resolve(response.data.access_token);
 			} else {
 				reject('no login')
-			}
+			}*/
 		})
-		.catch(err => {
-			reject(err);
-		});
 }
 
 function getGitHubUser(accessToken) {
