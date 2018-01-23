@@ -236,7 +236,7 @@ function setGitHubOAuthRoute(serverNames, webServer, db, logger  ) {
 					return db.collection('user');
 				})
 				.then( userCollection => {
-					return saveOrUpdateGitHubUser(userCollection);
+					return saveOrUpdateGitHubUser(userCollection, newUser);
 				})
 				.then ( saveUser => {
 					logger.info(`save:${JSON.stringify(saveUser)}`);
