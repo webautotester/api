@@ -13,6 +13,7 @@ const ExtractJwt = passportJWT.ExtractJwt;
 const JwtStrategy = passportJWT.Strategy;
 
 const GitHubStrategy = require('passport-github2').Strategy;
+const axios = require('axios');
 
 
 
@@ -166,26 +167,15 @@ function setGitHubOAuthStrategy(serverNames, webServer, db, logger) {
 						username : profile.username
 					};
 					logger.info(`GitHub New User ? ${JSON.stringify(newUser)}`);
-					userCollection.findOne({type: 'github', gitHubID: newUser.gitHubID})
-						.then( (user) => {
-							if (user) {
-								newUser._id = user._id;
-							} else {
-								newUser._id = ObjectID();
-							}
-							userCollection.save(newUser)
-							.then(savedUser => {
-								done(null,newUser);
-							})
-							.catch(err => {
-								done(err,null);
-							});
+					saveOrUpdateGitHubUser(userCollection, newUser)
+						.then(savedUser => {
+							done(null,newUser);
 						})
-						.catch( (err) => {
+						.catch( err => {
 							done(err,null);
-						});
+						})
 				}
-			})
+			});
 		});
 
 	passport.use(gitHubStrategy);
@@ -217,15 +207,101 @@ function setGitHubOAuthRoute(serverNames, webServer, db, logger  ) {
 		(req, res) => {
 			if (req.isAuthenticated()) {
 				logger.info(`authenticated:${JSON.stringify(req.user)}`);
-				let username = req.user.username;
-				let payload = {username: username};
-				let token = jwt.sign(payload, process.env.JWT_SECRET, {expiresIn:'4h'});
-				res.json({message: 'user authenticated!', username: username, jwt: token});
+				let token = createJWT(req.user.username);
+				res.json({message: 'user authenticated!', username: req.user.username, jwt: token});
 			} else {
 				res.status(401).json({message:'wrong username / password'});
 			}
 		}
 	);
+
+	webServer.post(
+		'/api/github/plugin',
+		(req, res) => {
+			let newUser = {
+				type : 'github',
+			};
+			let code = req.body.code;
+			getGitHubAccessToken(code)
+				.then( accessToken => {
+					newUser.accessToken = accessToken;
+					return getGitHubUser(accessToken);;
+				})
+				.then( gitHubProfile => {
+					newUser.gitHubID = gitHubProfile.gitHubID;
+					newUser.username = gitHubProfile.username;
+					return db.collection('user');
+				})
+				.then( userCollection => {
+					return saveOrUpdateGitHubUser(userCollection);
+				})
+				.then ( saveUser => {
+					let token = createJWT(saveUser.username);
+					res.json({message: 'user authenticated!', username: saveUser.username, jwt: token});
+				})
+				.catch(err => {
+					res.status(401).json({message:'wrong GitHub authentication'});
+				})
+		}
+	);
+}
+
+
+function saveOrUpdateGitHubUser(userCollection, newUser) {
+	return userCollection.findOne({type: 'github', gitHubID: newUser.gitHubID})
+		.then( (user) => {
+			if (user) {
+				newUser._id = user._id;
+			} else {
+				newUser._id = ObjectID();
+			}
+			return userCollection.save(newUser)
+		});
+}
+		
+
+function createJWT(username) {
+	let payload = {username: username};
+	return jwt.sign(payload, process.env.JWT_SECRET, {expiresIn:'4h'});
+}
+
+function getGitHubAccessToken(code) {
+	return new Promise((resolve, reject) => {
+		const url = 'https://github.com/login/oauth/access_token';
+		let parameters = {
+			client_id : process.env.PLUGIN_CLIENT_ID,
+			client_secret : process.env.PLUGIN_CLIENT_SECRET,
+			code : code
+		}
+		axios.post(url, parameters, {headers: {'accept': 'application/json'}})
+			.then( response => {
+				if (response.data.access_token) {
+					resolve(response.data.access_token);
+				} else {
+					reject('no login')
+				}
+			})
+			.catch(err => {
+				reject(err);
+			});
+	});
+}
+
+function getGitHubUser(accessToken) {
+	return new Promise((resolve, reject) => {
+		const url = 'https://api.github.com/user';
+		axios.get(url, {headers: {'Authorization': `token ${accessToken}`}})
+			.then( response => {
+				if (response.data.login && response.data.id) {
+					resolve({username: response.data.login, gitHubID: response.data.id});
+				} else {
+					reject('no profile');
+				}
+			})
+			.catch(err => {
+				reject(err);
+			});
+	});
 }
 
 module.exports.init = init;
