@@ -225,8 +225,8 @@ function setGitHubOAuthRoute(serverNames, webServer, db, logger  ) {
 			logger.info(`code:${code}`);
 			getGitHubAccessToken(code, logger)
 				.then( accessToken => {
-					newUser.accessToken = accessToken;
 					logger.info(`accessToken:${accessToken}`);
+					newUser.accessToken = accessToken;
 					return getGitHubUser(accessToken, logger);;
 				})
 				.then( gitHubProfile => {
@@ -282,15 +282,18 @@ function getGitHubAccessToken(code, logger) {
 		.then( response => {
 			logger.info(JSON.stringify(response.data));
 			if (response.data.access_token) {
+				logger.info(`access_token: ${response.data.access_token})`);
 				resolve(response.data.access_token);
 			} else {
-				reject(respons.data.error_description)
+				logger.info(`error: ${response.data.error_description})`);
+				reject(response.data.error_description)
 			}
 		});
 }
 
 function getGitHubUser(accessToken, logger) {
 	const url = 'https://api.github.com/user';
+	logger.info(`getGitHubUser: ${accessToken}`);
 	return axios.get(url, {headers: {'Authorization': `token ${accessToken}`}})
 		.then( response => {
 			logger.info(JSON.stringify(response.data));
