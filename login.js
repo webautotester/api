@@ -282,29 +282,24 @@ function getGitHubAccessToken(code, logger) {
 		.then( response => {
 			logger.info('axios ok');
 			logger.info(JSON.stringify(response.data));
-			/*if (response.data.access_token) {
+			if (response.data.access_token) {
 				resolve(response.data.access_token);
 			} else {
-				reject('no login')
-			}*/
-		})
+				reject(respons.data.error_description)
+			}
+		});
 }
 
 function getGitHubUser(accessToken) {
-	return new Promise((resolve, reject) => {
-		const url = 'https://api.github.com/user';
-		axios.get(url, {headers: {'Authorization': `token ${accessToken}`}})
-			.then( response => {
-				if (response.data.login && response.data.id) {
-					resolve({username: response.data.login, gitHubID: response.data.id});
-				} else {
-					reject('no profile');
-				}
-			})
-			.catch(err => {
-				reject(err);
-			});
-	});
+	const url = 'https://api.github.com/user';
+	return axios.get(url, {headers: {'Authorization': `token ${accessToken}`}})
+		.then( response => {
+			if (response.data.login && response.data.id) {
+				resolve({username: response.data.login, gitHubID: response.data.id});
+			} else {
+				reject('no profile');
+			}
+		});
 }
 
 module.exports.init = init;
