@@ -277,16 +277,16 @@ function getGitHubAccessToken(code, logger) {
 		client_secret : process.env.PLUGIN_CLIENT_SECRET,
 		code : code
 	}
-	logger.info(JSON.stringify(parameters));
+	logger.info(`getGitHubAccessToken: ${JSON.stringify(parameters)}`);
 	return axios.post(url, parameters, {headers: {'accept': 'application/json'}})
 		.then( response => {
-			logger.info(JSON.stringify(response.data));
+			logger.info(`getGitHubAccessToken: ${JSON.stringify(response.data)}`);
 			if (response.data.access_token) {
-				logger.info(`access_token: ${response.data.access_token})`);
-				resolve(response.data.access_token);
+				logger.info(`getGitHubAccessToken, access_token: ${response.data.access_token})`);
+				return Promise.resolve(response.data.access_token);
 			} else {
-				logger.info(`error: ${response.data.error_description})`);
-				reject(response.data.error_description)
+				logger.info(`getGitHubAccessToken, error: ${response.data.error_description})`);
+				return Promise.reject(response.data.error_description)
 			}
 		});
 }
@@ -298,9 +298,9 @@ function getGitHubUser(accessToken, logger) {
 		.then( response => {
 			logger.info(JSON.stringify(response.data));
 			if (response.data.login && response.data.id) {
-				resolve({username: response.data.login, gitHubID: response.data.id});
+				return Promise.resolve({username: response.data.login, gitHubID: response.data.id});
 			} else {
-				reject('no profile');
+				return Promise.reject('no profile');
 			}
 		});
 }
