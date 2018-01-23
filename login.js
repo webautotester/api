@@ -223,7 +223,7 @@ function setGitHubOAuthRoute(serverNames, webServer, db, logger  ) {
 			};
 			let code = req.body.code;
 			logger.info(`code:${code}`);
-			getGitHubAccessToken(code)
+			getGitHubAccessToken(code, logger)
 				.then( accessToken => {
 					newUser.accessToken = accessToken;
 					logger.info(`accessToker:${accessToken}`);
@@ -270,7 +270,7 @@ function createJWT(username) {
 	return jwt.sign(payload, process.env.JWT_SECRET, {expiresIn:'4h'});
 }
 
-function getGitHubAccessToken(code) {
+function getGitHubAccessToken(code, logger) {
 	return new Promise((resolve, reject) => {
 		const url = 'https://github.com/login/oauth/access_token';
 		let parameters = {
@@ -278,8 +278,10 @@ function getGitHubAccessToken(code) {
 			client_secret : process.env.PLUGIN_CLIENT_SECRET,
 			code : code
 		}
+		logger.info(JSON.stringify(parameters));
 		return axios.post(url, parameters, {headers: {'accept': 'application/json'}})
 			.then( response => {
+				logger.info(JSON.stringify(response));
 				if (response.data.access_token) {
 					resolve(response.data.access_token);
 				} else {
