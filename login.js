@@ -224,10 +224,10 @@ function setGitHubOAuthRoute(serverNames, webServer, db, logger  ) {
 			let code = req.body.code;
 			logger.info(`code:${code}`);
 			getGitHubAccessToken(code, logger)
-				.then( token => {
-					newUser.accessToken = token.access_token;
-					logger.info(`accessToken:${newUser.accessToken}`);
-					return getGitHubUser(newUser.accessToken, logger);;
+				.then( accessToken => {
+					newUser.accessToken = accessToken;
+					logger.info(`accessToken:${accessToken}`);
+					return getGitHubUser(accessToken, logger);;
 				})
 				.then( gitHubProfile => {
 					newUser.gitHubID = gitHubProfile.gitHubID;
