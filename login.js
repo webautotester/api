@@ -271,27 +271,25 @@ function createJWT(username) {
 }
 
 function getGitHubAccessToken(code, logger) {
-	return new Promise((resolve, reject) => {
-		const url = 'https://github.com/login/oauth/access_token';
-		let parameters = {
-			client_id : process.env.PLUGIN_CLIENT_ID,
-			client_secret : process.env.PLUGIN_CLIENT_SECRET,
-			code : code
-		}
-		logger.info(JSON.stringify(parameters));
-		return axios.post(url, parameters, {headers: {'accept': 'application/json'}})
-			.then( response => {
-				logger.info(JSON.stringify(response));
-				if (response.data.access_token) {
-					resolve(response.data.access_token);
-				} else {
-					reject('no login')
-				}
-			})
-			.catch(err => {
-				reject(err);
-			});
-	});
+	const url = 'https://github.com/login/oauth/access_token';
+	let parameters = {
+		client_id : process.env.PLUGIN_CLIENT_ID,
+		client_secret : process.env.PLUGIN_CLIENT_SECRET,
+		code : code
+	}
+	logger.info(JSON.stringify(parameters));
+	return axios.post(url, parameters, {headers: {'accept': 'application/json'}})
+		.then( response => {
+			logger.info(JSON.stringify(response));
+			if (response.data.access_token) {
+				resolve(response.data.access_token);
+			} else {
+				reject('no login')
+			}
+		})
+		.catch(err => {
+			reject(err);
+		});
 }
 
 function getGitHubUser(accessToken) {
