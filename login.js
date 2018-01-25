@@ -71,6 +71,10 @@ function setJWTStrategy(serverNames, webServer, db, logger) {
 }
 
 function setJWTRoute(serverNames, webServer, db, logger) {
+	let jwtOptions = {};
+	jwtOptions.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
+	jwtOptions.secretOrKey = process.env.JWT_SECRET;
+	
 	webServer.post('/api/login', (req, res) => {
 		let username = req.body.username;
 		let password = req.body.password;
