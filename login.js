@@ -83,6 +83,7 @@ function setJWTRoute(serverNames, webServer, db, logger) {
 				logger.info(`username=${username}`);
 				userCollection.findOne({type : 'wat', username : username})
 					.then( foundUser => {
+						logger.info(`user: ${JSON.stringify(foundUser)}`);
 						if (checkAuthentication(foundUser, username, password)) {
 							var payload = {username: foundUser.username};
 							var token = jwt.sign(payload, jwtOptions.secretOrKey, {expiresIn:'4h'});
