@@ -76,6 +76,7 @@ function setJWTRoute(serverNames, webServer, db, logger) {
 		let password = req.body.password;
 		db.collection('user', (err, userCollection) => {
 			if (err) {
+				logger.error('error in collection');
 				logger.error(err);
 				res.status(404).json({message:JSON.stringify(err)});
 			} else {
@@ -91,6 +92,7 @@ function setJWTRoute(serverNames, webServer, db, logger) {
 						}
 					})
 					.catch(err => {
+						logger.error('error in find user');
 						logger.error(err);
 						res.status(404).json({message:JSON.stringify(err)});
 					});
