@@ -85,8 +85,11 @@ function setJWTRoute(serverNames, webServer, db, logger) {
 					.then( foundUser => {
 						logger.info(`user: ${JSON.stringify(foundUser)}`);
 						if (checkAuthentication(foundUser, username, password)) {
+							logger.info(`authentication is checked`);
 							var payload = {username: foundUser.username};
+							logger.info(`payload:${payload}`);
 							var token = jwt.sign(payload, jwtOptions.secretOrKey, {expiresIn:'4h'});
+							logger.info(`token:${token}`);
 							res.json({message: 'user authenticated!', username: foundUser.username, jwt: token});
 						} else {
 							logger.info('wrong username / password');
