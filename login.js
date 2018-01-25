@@ -80,6 +80,7 @@ function setJWTRoute(serverNames, webServer, db, logger) {
 				logger.error(err);
 				res.status(404).json({message:JSON.stringify(err)});
 			} else {
+				logger.info(`username=${username}`);
 				userCollection.findOne({type : 'wat', username : username})
 					.then( foundUser => {
 						if (checkAuthentication(foundUser, username, password)) {
